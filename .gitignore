@@ -1,0 +1,9 @@
+.env
+.env.production
+secret.txt
+secrets/
+.release.env
+.deploy/
+backups/
+*.log
+.DS_Store

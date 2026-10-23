@@ -1,0 +1,18 @@
+[Unit]
+Description=DIKU consistent database and upload backup
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=2h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/diku/database
+ExecStart=/bin/bash /opt/diku/database/scripts/backup.sh
+User=diku-deploy
+Group=diku-deploy
+UMask=0077
+TimeoutStartSec=900
+Restart=on-failure
+RestartSec=5min

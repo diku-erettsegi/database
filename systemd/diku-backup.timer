@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up DIKU daily at 03:30 Budapest time
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 Europe/Budapest
+RandomizedDelaySec=5min
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

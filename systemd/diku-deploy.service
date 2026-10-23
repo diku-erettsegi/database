@@ -1,0 +1,14 @@
+[Unit]
+Description=DIKU tested container image update
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/diku/database
+ExecStart=/bin/bash /opt/diku/database/scripts/deploy.sh
+User=diku-deploy
+Group=diku-deploy
+UMask=0077
+TimeoutStartSec=900

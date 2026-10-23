@@ -1,0 +1,25 @@
+name: Validate infrastructure
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate local Compose
+        run: docker compose -f compose.yml config --quiet
+      - name: Validate production Compose template
+        run: docker compose --env-file .env.production.example -f compose.production.yml config --quiet
+      - name: Check Bash syntax
+        run: |
+          for script in scripts/*.sh tests/*.sh; do
+            bash -n "$script"
+          done
+      - name: Test production preflight
+        run: bash tests/preflight.test.sh
+      - name: Test deployment orchestration
+        run: bash tests/deploy.test.sh

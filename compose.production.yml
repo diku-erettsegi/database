@@ -1,0 +1,105 @@
+name: diku
+services:
+  db:
+    image: ${MARIADB_IMAGE:?MARIADB_IMAGE digest required}
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:?DB_NAME required}
+      MARIADB_USER: ${DB_USER:?DB_USER required}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD required}
+      TZ: Europe/Budapest
+    volumes:
+      - database:/var/lib/mysql
+    networks: [data]
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 768m
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/diku-erettsegi/backend:main}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${DB_NAME:?DB_NAME required}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:?DB_USER required}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD required}
+      SPRING_PROFILES_ACTIVE: production
+      STORAGE_PATH: /app/uploads
+      SECURE_COOKIE: "true"
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-}
+      BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME:-DIKU admin}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
+      TZ: Europe/Budapest
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=65
+    volumes:
+      - uploads:/app/uploads
+    networks: [data, app]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, http://localhost:8080/actuator/health]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+    mem_limit: 1024m
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    logging: *logging
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/diku-erettsegi/frontend:main}
+    networks: [app, edge]
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1/]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    mem_limit: 128m
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    logging: *logging
+  cloudflared:
+    image: ${CLOUDFLARED_IMAGE:?CLOUDFLARED_IMAGE digest required}
+    command: tunnel --no-autoupdate --metrics 127.0.0.1:2000 run
+    environment:
+      TUNNEL_TOKEN_FILE: /run/secrets/cloudflared-token
+    secrets: [cloudflared-token]
+    networks: [edge]
+    depends_on:
+      frontend:
+        condition: service_healthy
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    cap_drop: [ALL]
+    mem_limit: 256m
+    healthcheck:
+      test: [CMD, cloudflared, tunnel, --metrics, "127.0.0.1:2000", ready]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+    restart: unless-stopped
+    logging: *logging
+networks:
+  data:
+    internal: true
+  app:
+    internal: true
+  edge:
+volumes:
+  database:
+  uploads:
+secrets:
+  cloudflared-token:
+    file: ./secrets/cloudflared-token
