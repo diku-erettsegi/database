@@ -1,8 +1,8 @@
 # DIKU – adatbázis és üzemeltetés
 
-**Aktuális telepítési állapot (2026-10-23): [DEPLOY-STATUS](docs/DEPLOY-STATUS.md).** A Docker és Compose már telepítve a VPS-re; a main-push/CI folyamat megkezdődött. A korábbi előkészítési állapotot az alábbi dátumozott leírás őrzi.
+**Aktuális telepítési állapot (2026-10-24): [DEPLOY-STATUS](docs/DEPLOY-STATUS.md).** A VPS-deploy, belső admin-auth és izolált restore sikeres. Mindkét timer enabled/active; frontend és backend main push → CI → GHCR → timer → VPS frissítés PASS, az adatok megmaradtak. A backup systemd service kézi próbája és a napi naptári ütemezés külön igazolt; négy healthy konténer, bootstrap eltávolítva. A restore üres uploadarchívummal történt, valódi tananyagbyte-próba még nincs. Cloudflare route/DNS, www 301 és privát/API cache bypass beállítva; a Microware névszerverváltást és a publikus HTTPS-próbát a felhasználó későbbre halasztotta. A korábbi előkészítési állapotot az alábbi dátumozott leírás őrzi.
 
-A `diku-erettsegi.hu` helyi React + Spring Boot + MariaDB alkalmazása. Ez a repó tartalmazza a teljes környezet Compose konfigurációját, a dokumentációt és a későbbi Ubuntu VPS telepítésének előkészítését.
+A `diku-erettsegi.hu` React + Spring Boot + MariaDB alkalmazása. Ez a repó tartalmazza a helyi és Ubuntu VPS környezet Compose konfigurációját, az üzemeltetési scripteket és a közös dokumentációt.
 
 ## Jelenlegi funkciók – 2026. október 21.
 

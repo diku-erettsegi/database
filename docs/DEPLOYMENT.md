@@ -1,6 +1,6 @@
 # Rackforest VPS: telepítés és automatikus frissítés
 
-Frissítve: **2026-10-23**. A tényleges telepítés megkezdődött, aktuális teljesített lépések: **[DEPLOY-STATUS](DEPLOY-STATUS.md)**. Az alábbi eljárásleírás önmagában nem végrehajtási igazolás. Kiinduló szerveradatok: [SERVER-AUDIT](SERVER-AUDIT-2026-10-22.md); teszteredmények: [HANDOFF](HANDOFF.md).
+Frissítve: **2026-10-24**. A VPS-deploy, belső admin-auth, bootstrap eltávolítás, izolált backup/restore és a backup systemd szolgáltatás kézi próbája sikeres. A záró állapot négy healthy konténer, két enabled/active timer; mindkét alkalmazás main push → CI → GHCR → timer → VPS frissítése és adatmegőrzése igazolt. A napi mentés naptári üteme ellenőrzött, következő futása még jövőbeli. A restore üres uploadarchívummal történt; valódi tananyagbyte-próba még nincs. Aktív image-pár, mentések és további ellenőrzések: **[DEPLOY-STATUS](DEPLOY-STATUS.md)**. A felhasználó a Microware névszerverváltást és a publikus HTTPS-próbát későbbre halasztotta. Az alábbi eljárásleírás önmagában nem végrehajtási igazolás. Kiinduló szerveradatok: [SERVER-AUDIT](SERVER-AUDIT-2026-10-22.md); teszteredmények: [HANDOFF](HANDOFF.md).
 
 ## Választott működés
 
@@ -17,11 +17,11 @@ Böngésző → Cloudflare HTTPS → titkosított Tunnel → frontend:80
                                                  backend:8080 → db:3306
 ```
 
-A szerver kész image-eket húz le, nem a forráskódot fordítja. A main push után nincs kézi SSH vagy újraindítás. Átfutás: GitHub teszt/build ideje + körülbelül kétperces timer-várakozás + letöltés/indulás. A GitHub nem kap VPS SSH-jogosultságot; nincs bejövő deploy-webhook vagy CI runner az éles gépen.
+A szerver kész image-eket húz le, nem a forráskódot fordítja. Az aktív deploy timer mellett a main push frissítéséhez nem kell kézi SSH vagy újraindítás; október 24-én mindkét alkalmazással igazoltuk. Átfutás: GitHub teszt/build ideje + körülbelül kétperces timer-várakozás + letöltés/indulás. A GitHub nem kap VPS SSH-jogosultságot; nincs bejövő deploy-webhook vagy CI runner az éles gépen.
 
 Ez egygépes frissítés, rövid kieséssel. A mentés idejére a backend leáll, újraindítása megszünteti a memóriában tárolt sessionöket. A statikus tájékoztatók eközben elérhetők maradhatnak, az API és a jelentkezés átmenetileg nem. Nem ígérünk megszakításmentes kiadást.
 
-**Automatikus:** frontend/backend kiadások, a backenddel érkező új Flyway migrációk. **Felügyelt:** a `database` infrastruktúra-repó, Ubuntu, MariaDB és cloudflared frissítése. Ezek a tárolt adatokhoz/hálózathoz nyúlnak, ezért külön ellenőrzött üzemeltetési kiadást kapnak. Az infra main validál, nem módosítja automatikusan a VPS konfigurációját.
+**Automatikus:** frontend/backend kiadások, a backenddel érkező új Flyway migrációk. A most igazolt frissítés dokumentációs változás volt, új API/migráció nélkül. **Felügyelt:** a `database` infrastruktúra-repó, Ubuntu, MariaDB és cloudflared frissítése. Ezek a tárolt adatokhoz/hálózathoz nyúlnak, ezért külön ellenőrzött üzemeltetési kiadást kapnak. Az infra main validál, nem módosítja automatikusan a VPS konfigurációját.
 
 A két alkalmazásrepo kiadása nem atomi. Előbb visszafelé kompatibilis backend, utána frontend szükséges; Flyway esetén először hozzáadó változtatás. Törő változásnál állítsd le a timert, rögzíts és tesztelj összetartozó image-párt. Az image rollback **nem** fordítja vissza a DB-migrációt.
 
@@ -29,9 +29,9 @@ A két alkalmazásrepo kiadása nem atomi. Előbb visszafelé kompatibilis backe
 
 A meglévő Rackforest gép Ubuntu 24.04.5 LTS, x86_64, 1 vCPU, kb. 4 GB RAM és 30 GB lemez, a felméréskor 23 GB szabad. Kis forgalmú induláshoz észszerű kiindulás; még nincs terheléses mérés. A fordítás GitHubon fut. Compose memóriahatárok: backend 1024 MB, MariaDB 768 MB, frontend 128 MB, cloudflared 256 MB. Feltöltések, image-ek és mentések lemezfoglalását együtt kell figyelni.
 
-Szükséges hozzáférések: GitHub organization/repo/Actions és privát GHCR package-ek olvasása; SSH-s operátor és Rackforest helyreállítási konzol; regisztrátori névszerver/DNS-jog és Cloudflare-zóna; külső mentési cél és üzemeltetési riasztások címzettje.
+Szükséges hozzáférések: GitHub organization/repo/Actions kezelése; SSH-s operátor és Rackforest helyreállítási konzol; Microware névszerver/DNS-jog és Cloudflare-zóna; külső mentési cél és üzemeltetési riasztások címzettje. Az alkalmazásimage-ek jelenleg nyilvános GHCR package-ek, lehúzásukhoz nem kell registry-hitelesítés.
 
-Az első két alkalmazásimage-nek már léteznie kell a GHCR-ben. A main első pushja október 23-án megtörtént; az aktuális CI-eredményt a DEPLOY-STATUS rögzíti. A `main` legyen védett, ellenőrzött PR-okkal. Mindkét workflow csak sikeres teszt után publikál. A frontend `APPLICATIONS_ENABLED` repository variable alapértelmezése `false`. Ez **csak a felület kapcsolója**, nem tiltja a backend végpontot. Staging esetén a teljes hostot korlátozd, és végleges tájékoztatók előtt ne irányíts rá nyilvános adatgyűjtést.
+Az első két alkalmazásimage létezik a GHCR-ben, a VPS névtelen pullja és első deployja október 24-én sikeres. A main első pushja október 23-án megtörtént; a CI-eredményt és az aktív image-párt a DEPLOY-STATUS rögzíti. A `main` legyen védett, ellenőrzött PR-okkal. Mindkét workflow csak sikeres teszt után publikál. A frontend `APPLICATIONS_ENABLED` repository variable alapértelmezése `false`. Ez **csak a felület kapcsolója**, nem tiltja a backend végpontot. Staging esetén a teljes hostot korlátozd, és végleges tájékoztatók előtt ne irányíts rá nyilvános adatgyűjtést.
 
 ## Egyszeri Ubuntu-előkészítés
 
@@ -65,18 +65,18 @@ A `diku-deploy` Docker-csoporttagsága gyakorlatilag hostszintű jogosultság. N
 
 ## GitHub és GHCR
 
-A szerverre csak a `database` repo kell. Privát repónál a klónozáshoz külön, **csak olvasható repository deploy key** használható. A GitHub szerverkulcsát ellenőrzött fingerprint alapján vedd fel; ne kapcsold ki a hostkey-ellenőrzést. Már beállított hozzáféréssel:
+A szerverre csak a `database` repo kell; a klón már a `/opt/diku/database` helyen van. Új gépen a jelenleg nyilvános repó HTTPS-en klónozható az alábbi módon; meglévő klónt ne inicializálj újra:
 
 ```bash
 sudo -iu diku-deploy
-git clone --branch main git@github.com:diku-erettsegi/database.git /opt/diku/database
+git clone --branch main https://github.com/diku-erettsegi/database.git /opt/diku/database
 cd /opt/diku/database
 docker version
 docker compose version
 python3 --version
 ```
 
-Privát image-ekhez a `diku-deploy` saját Docker-konfigurációjába jelentkezz be. GHCR-hez **classic PAT `read:packages` joggal**, mindkét package-et olvasni képes fióktól; szervezeti SSO esetén annak engedélyezése is kell. A klónozási kulcs nem helyettesíti. A CI saját `GITHUB_TOKEN`-nel publikál, PAT nem kell hozzá. [GHCR hitelesítés/digest](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+A jelenleg nyilvános frontend/backend image-ekhez nincs szükség `docker login` vagy PAT beállítására; a névtelen pull igazolt. **Csak későbbi privát image-ek esetén** jelentkezz be a `diku-deploy` saját Docker-konfigurációjába. GHCR-hez **classic PAT `read:packages` joggal**, mindkét package-et olvasni képes fióktól; szervezeti SSO esetén annak engedélyezése is kell. Priváttá tett repóhoz külön, csak olvasható repository deploy key használható ellenőrzött GitHub hostkey mellett; ez nem helyettesíti a registry-hitelesítést. A CI saját `GITHUB_TOKEN`-nel publikál, PAT nem kell hozzá. [GHCR hitelesítés/digest](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
 
 ```bash
 read -rp 'GitHub felhasználónév: ' registry_user
@@ -91,6 +91,8 @@ chmod 600 "$HOME/.docker/config.json"
 Credential helper nélkül a Docker config nem titkosítja a hitelesítést; a host fájljogai védik. Ne töltsd fel Gitbe vagy naplóba. Kövesd a PAT lejáratát/rotálását. Nyilvános package esetén pullhoz nem szükséges bejelentkezés.
 
 ## Konfiguráció és titkok
+
+A meglévő VPS-en az env és a tokenfájl már elkészült, a preflight elfogadta. Az alábbi inicializálás új környezetre vonatkozik; működő `.env.production` fájlt ne írj felül a mintával.
 
 ```bash
 cd /opt/diku/database
@@ -109,19 +111,19 @@ A `BOOTSTRAP_ADMIN_EMAIL/NAME/PASSWORD` csak üres felhasználótáblánál kés
 
 A tokenfájl csak a tényleges Tunnel tokent tartalmazza. A rögzített cloudflared image `65532:65532` felhasználóval fut. Ezért a fájl **0644**, de a host szülőkönyvtára **0700**: más hostfelhasználó nem járhatja be. A konténer a csak hozzá rendelt Compose secreten olvassa. A file-backed secret nem titkosított vault, és a bind mount `uid/gid/mode` átírására nem támaszkodunk. [Compose secrets](https://docs.docker.com/compose/how-tos/use-secrets/).
 
-MariaDB/cloudflared verzió és digest a `.env.production.example` fájlban rögzített. MariaDB 11.4.10 a helyi integrációban használt változat; cloudflared 2026.10.3 image-letöltése és CLI-je ellenőrzött, éles Tunnel-kapcsolata még nem. Frissítésük külön tesztelt infra-kiadás.
+MariaDB/cloudflared verzió és digest a `.env.production.example` fájlban rögzített. MariaDB 11.4.10 a helyi integrációban használt változat; cloudflared 2026.10.3 image-letöltése, CLI-je és a valódi VPS Tunnel-kapcsolata ellenőrzött. Október 24-én mindkét konténer healthy. Frissítésük külön tesztelt infra-kiadás.
 
 ## Cloudflare és a magyar domain
 
-**Cloudflare Tunnelt javaslunk.** A domain a magyar regisztrátornál marad; az autoritatív DNS névszerverei kerülnek Cloudflare-hez. Pontos lépések, megfigyelt NS/MX és DNSSEC/levelezés megőrzése: [CLOUDFLARE-SETUP](CLOUDFLARE-SETUP.md). A meglévő `mail.diku-erettsegi.hu`, MX/SPF/DKIM/DMARC rekordokat nem írjuk át a webes VPS-re.
+**A Cloudflare Tunnel már fut, a publikus route mentve.** A domain Microware-nél marad; a névszerverváltást a felhasználó későbbre halasztotta. A Free zóna jelenleg pending. Pontos lépések, kijelölt NS és DNSSEC/levelezés megőrzése: [CLOUDFLARE-SETUP](CLOUDFLARE-SETUP.md). A felhasználó szerint nincs használt levelezés/aldomain; a mail A/MX és wildcard rekordokat ennek ellenére megőriztük, a későbbi levelezést ő kezeli.
 
-A remotely managed Tunnel originje `http://frontend:80`. A www → apex 301 megőrzi az útvonalat/queryt; HTTPS kötelező. A VPS kimenő 7844 UDP/TCP kapcsolatot használ, plusz DNS/HTTPS-t a letöltésekhez. Bejövő webport nincs. Külső regisztrátor mellett támogatott a teljes DNS-beállítás; a névszerverváltás nélküli partial/CNAME setup magasabb csomaghoz kötött másik megoldás. [Névszerverek](https://developers.cloudflare.com/dns/nameservers/update-nameservers/), [Tunnel](https://developers.cloudflare.com/tunnel/get-started/).
+A remotely managed Tunnel mentett originje `http://frontend:80`; az apex proxizott Tunnel CNAME, a www proxizott CNAME az apexre. A külön www → apex 301 szabály útvonal/query megőrzésével mentve, Always Use HTTPS bekapcsolva, minimum TLS 1.2. A pending NS miatt még nincs edge tanúsítvány; a külső működést a későbbi HTTPS-aktiváláskor kell ellenőrizni. A VPS kimenő 7844 UDP/TCP kapcsolatot használ, plusz DNS/HTTPS-t a letöltésekhez. Bejövő webport nincs. Külső regisztrátor mellett támogatott a teljes DNS-beállítás; a névszerverváltás nélküli partial/CNAME setup magasabb csomaghoz kötött másik megoldás. [Névszerverek](https://developers.cloudflare.com/dns/nameservers/update-nameservers/), [Tunnel](https://developers.cloudflare.com/tunnel/get-started/).
 
-A cloudflared healthcheck a connector kapcsolatát ellenőrzi, nem a nyilvános DNS-t/tanúsítványt. A frontend csak a Tunnel belső hálózatán érhető el: a proxy a Cloudflare kliens-IP/protokoll fejléceiben bízik. A kliens alternatív `Forwarded` és kapcsolódó fejléceit az Nginx eltávolítja. A session cookie Secure; belépés/CSRF valódi HTTPS-en is tesztelendő. Privát/API tartalomra nincs megosztott cache.
+A cloudflared healthcheck a connector kapcsolatát ellenőrzi, nem a nyilvános DNS-t/tanúsítványt. A frontend csak a Tunnel belső hálózatán érhető el: a proxy a Cloudflare kliens-IP/protokoll fejléceiben bízik. A kliens alternatív `Forwarded` és kapcsolódó fejléceit az Nginx eltávolítja. A session cookie Secure; belépés/CSRF valódi HTTPS-en is tesztelendő. A **DIKU private and API bypass** Cloudflare szabály Active: `/api`, `/admin`, `/tanulo`, `/belepes` prefix vagy JSESSIONID cookie → Bypass cache; külső működése a domain átállása után ellenőrzendő.
 
 ## Első indítás és timerek
 
-Kész image-ek, kitöltött env és Tunnel konfiguráció után:
+Az első teljes indítás október 24-én sikeres volt, négy healthy konténerrel és rögzített `.release.env` fájllal. Az alábbi parancsok a telepítés/ellenőrzés eljárása; a `deploy.sh` változatlan image-eknél nem indít új kiadást:
 
 ```bash
 cd /opt/diku/database
@@ -132,9 +134,9 @@ docker compose --project-name diku --env-file .env.production --env-file .releas
 
 A preflight csak ellenőriz, titkot nem ír ki, envet nem futtat. Jogosultságokat, image pinelést, éles profilt/cookie-t és hostportok hiányát vizsgálja. A deploy automatikusan is meghívja. Első telepítéshez nincs korábbi visszaállítási pont. Meglévő DB-konténer/adatvolume mellett, ha a DB nem fut, a deploy megáll; nem indít migrációt mentés nélkül. Először a DB-t kell helyreállítani és menteni.
 
-Első siker után ellenőrizd az apex/www HTTPS-t, bejelentkezést, jogosultságokat, jelentkezést és privát fájlt. Tesztadatot kijelölt stagingbe vagy elkülönített, előre egyeztetett éles próbával írj. A meglévő `smoke-test.mjs` szándékosan csak localhoston fut.
+A belső VPS admin-auth, izolált restore és bootstrap env eltávolítása utáni backend-health sikeres, pontos korlátai a DEPLOY-STATUS-ban. Az admin hozzáférése a helyi Gitből kizárt `database/secrets/initial-admin.txt` átadófájlban van; tartalmát ne naplózd vagy dokumentáld. A névszerverváltás után külön ellenőrizd az apex/www HTTPS-t, bejelentkezést, jogosultságokat, jelentkezést és privát fájlt; ezt most a felhasználó kérésére kihagyjuk. Tesztadatot kijelölt stagingbe vagy elkülönített, előre egyeztetett éles próbával írj. A meglévő `smoke-test.mjs` szándékosan csak localhoston fut.
 
-Ezután a sudo-képes üzemeltetői fiókkal:
+A unitok telepítve, `systemd-analyze verify` ellenőrzésük sikeres; **október 24. 17:37 Europe/Budapest időtől mindkét timer enabled/active**. Az alábbi blokk új környezet telepítési/aktiválási eljárása; a meglévő VPS-en az aktiválást nem kell megismételni:
 
 ```bash
 sudo install -m 0644 /opt/diku/database/systemd/diku-deploy.service /etc/systemd/system/
@@ -147,7 +149,7 @@ systemctl list-timers diku-deploy.timer diku-backup.timer
 journalctl -u diku-deploy.service -u diku-backup.service -n 80
 ```
 
-Deploy: boot után 2 perccel, majd az előző futás vége után 2 perccel, legfeljebb 15 s szórással. Napi backup: 03:30 Europe/Budapest, legfeljebb 5 perc szórással, kimaradt naptári futást a systemd pótol. A scriptek közös flock-ot használnak. Lockütközéskor a deploy kihagyja a kört; a backup hibával kilép. A backup service hiba után 5 perccel újrapróbálkozik, kétórás ablakban legfeljebb 3 indulásig. Tartós hiba után kézi javítás/pótlás kell; a Persistent=true önmagában nem ismétel sikertelen futást. A timerek még nincsenek a VPS-en telepítve/engedélyezve.
+Az aktív deploy timer boot után 2 perccel, majd az előző futás vége után 2 perccel fut, legfeljebb 15 s szórással. Napi backup: 03:30 Europe/Budapest, legfeljebb 5 perc szórással, kimaradt naptári futást a systemd pótol. Az október 24-i ellenőrzéskor a következő backup 2026-10-25 03:34:37 CET-re esett, az óraátállítás után; a naptári ütem nem rögzített UTC-idő. A scriptek közös flock-ot használnak. Lockütközéskor a deploy kihagyja a kört; a backup hibával kilép. A backup service hiba után 5 perccel újrapróbálkozik, kétórás ablakban legfeljebb 3 indulásig. Tartós hiba után kézi javítás/pótlás kell; a Persistent=true önmagában nem ismétel sikertelen futást.
 
 ## Kiadási állapot és hiba
 
@@ -165,6 +167,10 @@ Hibaelhárítás: `sudo systemctl stop diku-deploy.timer diku-backup.timer`, ser
 
 ## Mentés és helyreállítás
 
+Október 24-én a `20261024T090312-248340` alkalmazásmentésből izolált restore sikeres: ellenőrzőösszegek, SQL import és normalizált dump byte-egyezés, tar diff, backend UP és `/api/courses`. Az uploadarchívum üres volt, ezért a következő érdemi fájlpróbát tényleges tananyaggal kell megismételni. A `diku-restore-20261024153350` tesztkonténerei leállítva, külön volume-jai megőrizve. A mentési/visszaállítási eljárás:
+
+A `diku-backup.service` külön kézi systemd-indítása is success/0: `backups/20261024T210241-588022`, backend utána healthy. Ez a valódi unit működését igazolja; a napi timer naptára külön ellenőrzött. Nem állítjuk, hogy a következő hajnali ütemezett futás már megtörtént, és nem várunk rá a telepítés lezárásához.
+
 `bash scripts/backup.sh`: az aktív backend leáll, SQL dump és privát uploads archívum készül ugyanahhoz az írásmentes állapothoz. Önálló mentés után visszaindítja a korábban futó backendet és megvárja a healthchecket. Deploy közben sikeres mentés után a backend állva marad, közvetlenül az új kiadás indul, így nem érkezhet új írás a mentés és migráció közé.
 
 A csomag `backups/<UTC idő>-<pid>/` alá kerül, meglévő release-párral és SHA256SUMS ellenőrzőösszeggel. Csak ellenőrzött dump/archívum kap COMPLETE jelzőt. Infrastrukturális jelszavak és Tunnel token nem kerülnek bele, de a DB személyes adatokat és felhasználói jelszóhasheket tartalmaz: a mentés védett adat. A művelet hibáját/újraindítási hibát a script hibakóddal jelzi.
@@ -177,12 +183,12 @@ A napi mentés legfeljebb 24 órás célzott adatvesztési ablakot ad csak műk�
 
 Figyelés: független HTTPS monitor, systemd hibák, utolsó sikeres deploy/backup, lemez 80% figyelmeztetés / 90% sürgős jelzés, RAM/OOM és health. Docker logkorlát 10 MB × 3 / szolgáltatás; backup/image külön nő. Automatikus image-prune nincs: futó és rollback digestet őrizni kell. Riasztási csatorna még nincs bekötve. Az alkalmazás továbbra sem küld e-mailt.
 
-## Indulás előtt még szükséges
+## Következő lépések
 
-1. Első commit/push, sikeres Actions és olvasható GHCR package-ek.
-2. Kulcsos operátor, Docker/Compose, kitöltött konfiguráció és első éles admin.
-3. Cloudflare-zóna/Tunnel/token, teljes DNS-leltár, egyeztetett névszerverváltás, HTTPS/levelezés ellenőrzése.
-4. Staging sikeres frissítés és hibás image visszaállítása, majd production útvonal tesztje.
-5. Külső mentési cél, restore-próba, riasztás és végleges publikus/adatkezelési tartalom.
+1. A sikeres backup service próba után a napi mentések naptári futásának rendszeres üzemeltetési követése.
+2. A sikeres main → VPS automatikus frissítés kiegészítése hibás image VPS-rollback próbával; a sikeres restore megismétlése valódi tananyaggal.
+3. Külső mentési cél, megőrzés, riasztás és az operátori hozzáférés további védelme.
+4. Későbbi, felhasználó által választott időpontban Microware névszerverváltás, DNSSEC és tényleges apex/www HTTPS, átirányítás/cache, belépés/letöltés ellenőrzése. Most ez kihagyandó.
+5. A nyilvános adatgyűjtés megnyitása előtt végleges publikus/adatkezelési tartalom.
 
-A konfiguráció, helyi teszt és szerverfelmérés nem jelenti ezek végrehajtását. A teljesített lépéseket a HANDOFF-ban vezesd tovább.
+A belső konténer-health, backup és külső HTTPS ellenőrzése külön eredmény. A teljesített lépéseket a DEPLOY-STATUS és HANDOFF fájlokban vezesd tovább.

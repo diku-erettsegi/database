@@ -1,6 +1,8 @@
-# Cloudflare DNS és Tunnel beállítási terv
+# Cloudflare DNS és Tunnel beállítási útmutató
 
-**Állapot: 2026. október 22. — előkészítési útmutató, nem végrehajtott éles telepítés.** A cél egy Ubuntu alapú Rackforest VPS és a `diku-erettsegi.hu` domain összekötése. A domain a jelenlegi magyar regisztrátornál marad; csak az autoritatív DNS szolgáltatója változik Cloudflare-re. Domaintranszfer és regisztrátorváltás nem szükséges. A webes forgalom Cloudflare proxyn és Tunnelen érkezik.
+**Állapot: 2026. október 24.** A Rackforest VPS-en négy konténer healthy, mindkét alkalmazás automatikus frissítése, a belső auth/restore és a backup systemd szolgáltatás próbája sikeres; a két timer enabled/active. A Cloudflare Free zóna, Tunnel route, www 301, HTTPS-beállítások és privát/API cache bypass elkészült, a zóna **Pending Nameserver Update**. A felhasználó a Microware névszerverváltást későbbre halasztotta: **most kihagyjuk, a publikus domain/HTTPS próbával együtt**. A VPS működése és a domain nyilvános aktiválása külön állapot. Részletes igazolások és korlátok: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
+A `diku-erettsegi.hu` domain Microware-nél marad; csak az autoritatív DNS szolgáltatója változik majd Cloudflare-re. Domaintranszfer és regisztrátorváltás nem szükséges. A tervezett webes útvonal Cloudflare proxy és Tunnel. Az alábbi eljárás a későbbi aktiválás és új környezetek útmutatója; a már kész zónát, Tunnelt és tokenfájlt ne hozd létre újra.
 
 A 2026. október 22-i, csak olvasási DNS-ellenőrzés eredménye:
 
@@ -10,7 +12,22 @@ A 2026. október 22-i, csak olvasási DNS-ellenőrzés eredménye:
 | NS | `ns2.m.glbns.com` |
 | MX | prioritás `5`, cél `mail.diku-erettsegi.hu` |
 
-Ez nem teljes zónaexport. Az összes jelenlegi rekordot külön fel kell mérni. A Cloudflare által kiosztott új névszerverek és a Tunnel azonosítója még nincsenek rögzítve. Cloudflare-fiókhoz jelenleg nincs hozzáférés; az SSH-kapcsolat és a VPS olvasási felmérése sikerült, lásd [SERVER-AUDIT](SERVER-AUDIT-2026-10-22.md). Ez a dokumentum nem tartalmaz szerverjelszót, tokent vagy SSH-kulcsot. Nem történt DNS-módosítás vagy éles telepítés.
+Ez történeti DNS-pillanatkép, nem teljes zónaexport. Az október 24-i Cloudflare-beállítások a felületen visszaolvasva:
+
+| Beállítás | Jelenlegi konfiguráció |
+| --- | --- |
+| Kiosztott új NS | `alexa.ns.cloudflare.com`, `gerardo.ns.cloudflare.com` |
+| Tunnel | `diku-erettsegi`, connector healthy |
+| Publikus route | `diku-erettsegi.hu` → `http://frontend:80` |
+| Apex DNS | proxizott CNAME a tényleges Tunnelre |
+| www DNS | proxizott CNAME az apexre |
+| mail A és wildcard A | korábbi tárhelycél, DNS only |
+| MX | prioritás `5`, cél `mail.diku-erettsegi.hu`, megőrizve |
+| www → apex átirányítás | 301, útvonal és query megőrzése, szabály mentve |
+| HTTPS | Always Use HTTPS bekapcsolva, minimum TLS 1.2; edge tanúsítvány még nincs |
+| Privát/API cache | `DIKU private and API bypass`, Active |
+
+A névszerverek kiosztása nem jelenti a Microware delegálás módosítását. A felhasználó legfrissebb közlése szerint nincs használt levelezés vagy aldomain, a levelezést később maga intézi. A meglévő mail/MX/wildcard rekordokat megőriztük. Cloudflare-konfiguráció és VPS-telepítés történt, a nyilvános domainváltás még nincs végrehajtottként igazolva. Szerverjelszó, token és SSH-kulcs ebben a dokumentumban nincs.
 
 ## 1. Hozzáférések és mentés
 
@@ -28,6 +45,8 @@ Külön ellenőrizendő a levelezés:
 A meglévő értékeket a szolgáltató tényleges konfigurációjából vedd át; ne hozz létre kitalált SPF/DKIM/DMARC tartalmat vagy új levelezési szolgáltatást. Az apex címére támaszkodó SPF `a` mechanizmust külön vizsgáld meg, mert a webes DNS-cél későbbi cseréje módosíthatja a jelentését. A `mail.diku-erettsegi.hu` kiszolgáló címét nem szabad automatikusan a VPS-re átírni. [Cloudflare levelezési rekordok](https://developers.cloudflare.com/dns/manage-dns-records/how-to/email-records/).
 
 ## 2. Zóna létrehozása, DNSSEC és névszerverváltás
+
+**A mostani projektben az 1–2. lépés kész. A regisztrátori váltást a felhasználó későbbre halasztotta; az alábbi további lépéseket most ne hajtsd végre.** A kiosztott névszerverpár a fenti táblában szerepel.
 
 1. Add hozzá a `diku-erettsegi.hu` zónát a kiválasztott Cloudflare-fiókhoz teljes, autoritatív DNS-beállítással. Importáld és ellenőrizd a meglévő rekordokat. Az átállás előkészítése közben a régi webes cél is maradjon működőképes; a Tunnelre váltás külön lépés.
 2. Jegyezd fel a **Cloudflare által ehhez a zónához ténylegesen kiosztott két névszervert**. Másik domain névszervere vagy példából másolt név nem használható.
@@ -50,7 +69,7 @@ Böngésző → Cloudflare HTTPS → titkosított Tunnel → cloudflared
                                                 backend:8080 → db:3306
 ```
 
-A Cloudflare felületén hozz létre egy **remotely managed** Tunnelt. A jelenlegi felületen ez a Networking → Tunnels területről érhető el. A publikus alkalmazás útvonalának beállítása:
+A jelenlegi **remotely managed** Tunnel már létrejött `diku-erettsegi` néven, a connector healthy, az alábbi route mentve. Új környezetben a Networking → Tunnels területen hozható létre. A publikus alkalmazás beállítása:
 
 | Beállítás | Érték |
 | --- | --- |
@@ -63,7 +82,7 @@ A `frontend` Docker szolgáltatásnév: a `cloudflared` és a frontend közös D
 
 ### Tokenfájl, Docker Compose secret
 
-A projekt tervezett tokenátadása fájlos. A VPS `database` könyvtárához képest a `secrets/cloudflared-token` tartalmazza kizárólag a tényleges Tunnel tokent. A könyvtár és tartalma Gitből kizárt; ezt az első token elhelyezése előtt ellenőrizni kell. A Compose megfelelő részlete:
+A projekt tokenátadása fájlos, a valódi VPS-en működik és a preflight ellenőrizte. A VPS `database` könyvtárához képest a `secrets/cloudflared-token` tartalmazza kizárólag a tényleges Tunnel tokent. A könyvtár és tartalma Gitből kizárt; ezt új környezetben is az első token elhelyezése előtt ellenőrizni kell. A Compose megfelelő részlete:
 
 ```yaml
 services:
@@ -81,7 +100,7 @@ secrets:
 
 Ez részlet a production Compose-hoz, önmagában nem teljes telepítési fájl. **`TUNNEL_TOKEN` környezeti változót nem használunk.** A rögzített image `65532:65532` felhasználója olvassa a secretet: a `secrets` szülőmappa 0700, a tokenfájl 0644 módú legyen. A szülőmappa tiltja más hostfelhasználók hozzáférését; a fájl olvashatóságát a konténerbe bind-mountolt secreten is biztosítani kell. A Compose secret nem váltja ki a host fájljogainak védelmét. A `preflight.sh` ellenőrzi ezt, a kész Compose a Tunnel kapcsolatát healthcheckkel figyeli.
 
-A `TUNNEL_TOKEN_FILE` távolról kezelt Tunnelhez használható, cloudflared `2025.4.0` vagy újabb verzióval. Élesítés előtt kipróbált image-digestet rögzíts. A tokent ne másold dokumentumba, commitba, `.env.production` változóba, terminál-parancs argumentumába vagy naplóba. Rotáláskor a Cloudflare-nél cseréld, frissítsd a védett fájlt, és indítsd újra a connectort. [Hivatalos token-file futtatási paraméter](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/).
+A `TUNNEL_TOKEN_FILE` távolról kezelt Tunnelhez használható, cloudflared `2025.4.0` vagy újabb verzióval. A projekt cloudflared image-digestje rögzített, a jelenlegi verzió VPS-kapcsolata ellenőrzött; frissítéskor ismét tesztelj. A tokent ne másold dokumentumba, commitba, `.env.production` változóba, terminál-parancs argumentumába vagy naplóba. Rotáláskor a Cloudflare-nél cseréld, frissítsd a védett fájlt, és indítsd újra a connectort. [Hivatalos token-file futtatási paraméter](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/).
 
 ### Hálózat és tűzfal
 
@@ -91,9 +110,9 @@ Az alkalmazáshoz **nem kell bejövő 80/443 portot nyitni**, és a 8080/3306 po
 
 ## 4. HTTPS és www átirányítás
 
-A Cloudflare edge tanúsítványa fedje le a `diku-erettsegi.hu` és `www.diku-erettsegi.hu` neveket, és legyen aktív. A meglévő CAA rekordokat vizsgáld meg, ha a tanúsítvány kiadása elakad. Kapcsold be a HTTPS-re terelést. A böngésző és Cloudflare között HTTPS, a VPS-ig titkosított Tunnel, a Docker hálózaton pedig a fenti HTTP origin működik.
+Az Always Use HTTPS már bekapcsolva, a minimum TLS-verzió 1.2. Edge tanúsítvány a pending NS miatt még nincs; a későbbi aktiváláskor fedje le a `diku-erettsegi.hu` és `www.diku-erettsegi.hu` neveket, és legyen aktív. A meglévő CAA rekordokat vizsgáld meg, ha a tanúsítvány kiadása elakad. A böngésző és Cloudflare között HTTPS, a VPS-ig titkosított Tunnel, a Docker hálózaton pedig a fenti HTTP origin a tervezett teljes útvonal.
 
-A `www` névhez hozz létre proxizott DNS-rekordot, például az apexre mutató CNAME-et; a szabály csak Cloudflare-en átmenő kérésen fut. A Cloudflare Redirect Rule tervezett beállítása:
+A `www` névhez az apexre mutató proxizott CNAME és az alábbi külön Redirect Rule már elkészült. A szabály csak Cloudflare-en átmenő kérésen fut; a mentett konfiguráció működését a későbbi publikus aktiváláskor kell igazolni:
 
 ```text
 Feltétel:       http.host eq "www.diku-erettsegi.hu"
@@ -106,17 +125,13 @@ Példa: `https://www.diku-erettsegi.hu/kurzusok?utm_source=teszt` eredménye `ht
 
 ## 5. API és privát oldalak gyorsítótárazása
 
-A projekt Cloudflare Cache Rule szabálya állítsa **Bypass cache** módba az API-t, a belépési és védett útvonalakat, valamint a session cookie-val érkező kéréseket. A feltétel tervezett alakja:
+A **DIKU private and API bypass** Cache Rule **Active** állapotban mentve. A `/api`, `/admin`, `/tanulo`, `/belepes` útvonalprefixek vagy JSESSIONID cookie esetén **Bypass cache** a művelet. A beállítás a felületen kész, a külső működési próba a későbbi domainváltás után következik. A feltétel alakja:
 
 ```text
-(http.request.uri.path eq "/api") or
-starts_with(http.request.uri.path, "/api/") or
-(http.request.uri.path eq "/admin") or
-starts_with(http.request.uri.path, "/admin/") or
-(http.request.uri.path eq "/tanulo") or
-starts_with(http.request.uri.path, "/tanulo/") or
-(http.request.uri.path eq "/belepes") or
-starts_with(http.request.uri.path, "/belepes/") or
+starts_with(http.request.uri.path, "/api") or
+starts_with(http.request.uri.path, "/admin") or
+starts_with(http.request.uri.path, "/tanulo") or
+starts_with(http.request.uri.path, "/belepes") or
 (http.cookie contains "JSESSIONID=")
 ```
 
@@ -124,9 +139,9 @@ A szabályok sorrendjét úgy állítsd be, hogy későbbi cache-szabály ne ír
 
 ## 6. Aktiválás utáni ellenőrzés és visszaállítás
 
-A következők még végrehajtandó ellenőrzések, nem kész eredmények:
+A publikus DNS/HTTPS ellenőrzések a felhasználó kérésére a későbbi névszerverváltás utánra maradnak. A connector és a négy VPS-konténer healthy állapota már igazolt; az alábbi teljes működési ellenőrzést ez nem helyettesíti:
 
-- A zóna aktív, a nyilvános NS a kiosztott Cloudflare-pár; az MX és valamennyi mail rekord megegyezik a jóváhagyott leltárral. A levelezés gazdája ellenőrizze a tényleges küldést és fogadást is.
+- A zóna aktív, a nyilvános NS a kiosztott Cloudflare-pár; az MX és valamennyi megőrzött mail rekord megegyezik a jóváhagyott leltárral. Jelenleg nincs használt levelezés; későbbi bevezetésekor a felhasználó külön ellenőrizze a küldést és fogadást.
 - A DNSSEC az új Cloudflare DS-adattal validál, nincs `SERVFAIL`.
 - A Tunnel `Healthy`, az apex HTTPS-en ténylegesen betölt; a www 301 megőrzi az útvonalat és query stringet. A konténer healthcheck önmagában nem igazolja ezeket.
 - Belépés, CSRF, admin/tanuló jogosultság és védett letöltés a publikus HTTPS címen is működik; a session cookie `Secure` és `HttpOnly`. Az API és privát válaszok nem érkeznek megosztott cache-ből.

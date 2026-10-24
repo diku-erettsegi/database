@@ -1,8 +1,18 @@
-# Átadás – 2026. október 23.
+# Átadás – 2026. október 24.
 
 ## Aktuális telepítési munka
 
-A felhasználó október 23-án a tényleges deploy folytatását kérte. A **[DEPLOY-STATUS](DEPLOY-STATUS.md)** az irányadó élő állapot: Docker/Compose és diku-deploy már létrehozva a VPS-en, frontend/backend első main push megtörtént. A korábbi október 22-i, „csak előkészített / nincs push” bejegyzések történeti állapotok. Éles domain és automatikus deploy még nem aktivált; Cloudflare fiókbeállítás szükséges. Folytatáskor előbb az állapotdokumentum és a GitHub CI-k tényleges eredménye ellenőrizendő.
+A felhasználó október 23-án a tényleges deploy folytatását kérte; október 24-én is ez a munka folytatódik. A **[DEPLOY-STATUS](DEPLOY-STATUS.md)** az irányadó élő állapot. Docker Engine 29.9.2, Compose v5.6.1 és `diku-deploy` telepítve; a három repó első main pushja és mindhárom CI sikeres. Az infra klón `/opt/diku/database`, a production env privátan elkészült, a valódi VPS-preflight és a systemd unitok ellenőrzése sikeres.
+
+Október 24-én a felhasználó nyilvánossá tette a két GHCR image-et; a VPS `diku-deploy` felhasználójával a névtelen pull és az első teljes deploy sikeres. **17:37 Budapest időtől mindkét timer enabled/active.** A frontend és backend dokumentációs main pushja után mindkét CI és a teljes automatikus VPS-frissítés PASS; API-kód nem változott. A 23:02-es ellenőrzéskor a deploy service success/0, az új digestpár `.release.env`-ben rögzítve; a frissítés óta ellenőrzött változatlan kiadású körök „Nincs új kiadás” eredményűek. A végleges digestek egyeznek a GHCR main/teljes SHA tagjeivel, a teljes normalizált DB dump mindkét deploy előtti mentéssel egyezik. Pontos digestek és mentések: DEPLOY-STATUS. A `diku-erettsegi` Tunnel tokenje fájl-secretből érkezik.
+
+A `backups/20261024T090312-248340` alkalmazásmentésből az izolált `diku-restore-20261024153350` restore **PASS**: checksums, SQL import és normalizált dump byte-egyezés, tar diff, visszatöltött backend UP és `/api/courses`. Uploadarchívum üres, valódi tananyagbyte-próba nincs; tesztkonténerek leállítva, külön volume-ok megőrizve. Az éles belső Nginx → API admin-auth próba is PASS: login/sessionrotáció, Secure/HttpOnly, CSRF 403, anonim admin 401, no-store, két csoport, logout. Bootstrap env értékek kivéve; a backend újralétrehozása utáni healthy állapot igazolt. Az adminadatok a helyi, Gitből kizárt `database/secrets/initial-admin.txt` átadófájlban vannak; tartalmát ne olvasd dokumentációba vagy naplóba.
+
+A Cloudflare Free zóna **Pending Nameserver Update** állapotban. Kiosztott névszerverei `alexa.ns.cloudflare.com` és `gerardo.ns.cloudflare.com`; a felhasználó legfrissebb utasítása szerint a Microware-nél a váltást később végzi el, **most kihagyjuk**. Ez felülírja az esetleges korábbi átállításra utaló közlést. A Tunnel `diku-erettsegi.hu` → `http://frontend:80` route-ja mentve, az apex proxizott Tunnel CNAME, a www proxizott CNAME az apexre. A `mail` A és wildcard A DNS only, az MX prioritás 5 megőrizve; a felületen visszaolvasva. A felhasználó szerint nincs használt levelezés/aldomain, későbbi levelezését maga intézi; a meglévő rekordokat nem töröltük.
+
+A publikus domain/HTTPS-próba a névszerverváltással együtt későbbre halasztva. A Cloudflare www → apex 301 útvonal/query megőrzéssel mentve, Always Use HTTPS bekapcsolva, minimum TLS 1.2; edge tanúsítvány még nincs a pending NS miatt. A **DIKU private and API bypass** szabály Active: API/admin/tanuló/belépés prefix vagy JSESSIONID cookie → Bypass cache. Külső mentés/riasztás nincs bekötve. A korábbi október 22-i, „csak előkészített / nincs push” bejegyzések történeti állapotok; az alábbi dátumozott teszteredmények változatlanok. Folytatáskor az élő állapotot ellenőrizd, a korábbi előkészítést ne ismételd automatikusan.
+
+Záró VPS-próba PASS: négy healthy konténer, nincs hostport, bootstrap admin email/jelszó vagy pending/recovery állapot. Belső főoldal/kurzusok/courses API 200, anonim admin 401, ismeretlen oldal 404, no-store rendben. A `diku-backup.service` kézi systemd-indítása success/0; mentés `20261024T210241-588022`, backend utána healthy. A napi timer naptára külön ellenőrzött, következő futás 2026-10-25 03:34:37 CET; ez még jövőbeli esemény, nem kell rá várni a telepítés lezárásához. Záró lemezfoglaltság 28%, 21 GB szabad.
 
 ## Helyi rendszer
 
@@ -10,7 +20,7 @@ React + TypeScript + Vite, Java 21 / Spring Boot 3.5.16 és MariaDB 11.4, három
 
 Helyi admin: `admin@diku.local` / `DikuAdmin2026!`; tanuló: `diak@diku.local` / `DikuDiak2026!`. Csak local profilú tesztadatok. Backend 8080, DB 3308, valamennyi hostport loopbackre kötött. Másik projekt adatbázisa is fut a gépen; ahhoz és annak volume-jaihoz ne nyúlj.
 
-A három kezdetben üres repóban az első main kiadás elkezdődött; a pontos commit/push/CI állapot a DEPLOY-STATUS-ban. A szülőmappa README/AGENTS helyi útbaigazító, nem negyedik repó.
+A három kezdetben üres repó első main pushja és CI-futása sikeres; a pontos commit/push/CI állapot a DEPLOY-STATUS-ban. A szülőmappa README/AGENTS helyi útbaigazító, nem negyedik repó.
 
 ## Deploy-előkészítés – október 22.
 
@@ -82,7 +92,7 @@ Képek: [új főoldal](screenshots/strategy-home-desktop.jpg), [új mobil főold
 
 ## Üzemeltetés és fennmaradó határok
 
-Az aktuális telepítési állapot és tesztek a fenti október 22-i szakaszban vannak. Az október 17-i eredmények történeti ellenőrzések. Valódi GitHub CI, VPS-telepítés, Cloudflare Tunnel és teljes production backup/restore **még nem futott**; kizárólag a VPS SSH-felmérése készült el. Backend/frontend kompatibilis kiadást igényel; első élesítéshez [DEPLOYMENT](DEPLOYMENT.md).
+Az aktuális telepítési állapot a fenti október 24-i szakaszban és a [DEPLOY-STATUS](DEPLOY-STATUS.md) fájlban van. Valódi CI, VPS-deploy, belső auth, izolált backup/restore és mindkét alkalmazás automatikus frissítése sikeres; a restore üres uploadarchívummal történt. Publikus HTTPS, külső mentés és napi naptári backup-futás ettől külön követendő. A korábbi dátumozott eredmények történeti ellenőrzések. Backend/frontend kompatibilis kiadást igényel; üzemeltetéshez [DEPLOYMENT](DEPLOYMENT.md).
 
 Hosszú állás után a helyi Docker Desktop két alkalommal elakadt. Október 21-én és 22-én az újraindítás helyreállította, volume-t nem töröltünk. A második alkalommal a célzott `wsl --terminate docker-desktop` néhány perc alatt fejeződött be, utána Docker Desktop indítás és `docker compose up -d --wait db backend frontend` segített. WSLService-újraindítás jogosultság híján nem történt; teljes WSL shutdown vagy adattörlés sem. Ez környezeti hiba; a következő munka elején Docker állapot és API health ellenőrzés szükséges. A másik projekt DB-je is healthy állapotban maradt a helyreállítás után.
 
@@ -90,7 +100,7 @@ A tananyagok közösek minden aktív diáknak: jelentkezési csoport még nem ta
 
 Véglegesítendő: portrék, terem/telefon, laptopbérlés, fizetési/lemondási feltételek, jogi szövegek/adatmegőrzés, kóstolóanyag, 20 alkalom pontos naptára. Húsz egymást követő szombat január 9-től május 22-ig tart, ezért a vizsgához igazítás szervezői egyeztetést igényel.
 
-A production VITE_APPLICATIONS_ENABLED csak UI-kapcsoló: a nyilvános API ettől külön fogad CSRF-védett kérést. Éles adatgyűjtés előtt végleges tájékoztatás és adatkezelési folyamat szükséges. Ez most helyi alkalmazás, nem aktív éles szolgáltatás.
+A production VITE_APPLICATIONS_ENABLED csak UI-kapcsoló: az API ettől külön fogad CSRF-védett kérést. Éles adatgyűjtés előtt végleges tájékoztatás és adatkezelési folyamat szükséges. Az alkalmazás már a VPS-re is telepítve van, a publikus domain aktiválását a felhasználó későbbre halasztotta.
 
 ## Következő agent
 
