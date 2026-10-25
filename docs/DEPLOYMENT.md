@@ -1,5 +1,7 @@
 # Rackforest VPS: telepítés és automatikus frissítés
 
+**DNS-frissítés, 2026-10-25:** a névszerverváltás már igazolt, a Cloudflare még pending; a kézi ellenőrzést elindítottuk. A VPS négy konténere healthy, a publikus HTTPS még nem érhető el. A regisztrátori váltást ne ismételd; következő lépés az aktiválás és külső működés ellenőrzése. Az alábbi október 24-i halasztás történeti állapot. Mérési eredmények: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
 Frissítve: **2026-10-24**. A VPS-deploy, belső admin-auth, bootstrap eltávolítás, izolált backup/restore és a backup systemd szolgáltatás kézi próbája sikeres. A záró állapot négy healthy konténer, két enabled/active timer; mindkét alkalmazás main push → CI → GHCR → timer → VPS frissítése és adatmegőrzése igazolt. A napi mentés naptári üteme ellenőrzött, következő futása még jövőbeli. A restore üres uploadarchívummal történt; valódi tananyagbyte-próba még nincs. Aktív image-pár, mentések és további ellenőrzések: **[DEPLOY-STATUS](DEPLOY-STATUS.md)**. A felhasználó a Microware névszerverváltást és a publikus HTTPS-próbát későbbre halasztotta. Az alábbi eljárásleírás önmagában nem végrehajtási igazolás. Kiinduló szerveradatok: [SERVER-AUDIT](SERVER-AUDIT-2026-10-22.md); teszteredmények: [HANDOFF](HANDOFF.md).
 
 ## Választott működés

@@ -1,5 +1,7 @@
 # Cloudflare DNS és Tunnel beállítási útmutató
 
+**Legfrissebb ellenőrzés: 2026. október 25.** A Microware névszerverváltás már igazolt a `.hu` szülőzónából, Google és Cloudflare DNS-ből. A Cloudflare felület még pending; kézi névszerver-ellenőrzés elindítva. DS nincs, apex/www Proxied beállítás megőrizve, négy VPS-konténer healthy, publikus HTTPS még nem működik. A korábbi halasztás történeti állapot: **a regisztrátori váltást nem kell újra elvégezni**, az aktiválást és HTTPS-t kell ellenőrizni. Részletek: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
 **Állapot: 2026. október 24.** A Rackforest VPS-en négy konténer healthy, mindkét alkalmazás automatikus frissítése, a belső auth/restore és a backup systemd szolgáltatás próbája sikeres; a két timer enabled/active. A Cloudflare Free zóna, Tunnel route, www 301, HTTPS-beállítások és privát/API cache bypass elkészült, a zóna **Pending Nameserver Update**. A felhasználó a Microware névszerverváltást későbbre halasztotta: **most kihagyjuk, a publikus domain/HTTPS próbával együtt**. A VPS működése és a domain nyilvános aktiválása külön állapot. Részletes igazolások és korlátok: [DEPLOY-STATUS](DEPLOY-STATUS.md).
 
 A `diku-erettsegi.hu` domain Microware-nél marad; csak az autoritatív DNS szolgáltatója változik majd Cloudflare-re. Domaintranszfer és regisztrátorváltás nem szükséges. A tervezett webes útvonal Cloudflare proxy és Tunnel. Az alábbi eljárás a későbbi aktiválás és új környezetek útmutatója; a már kész zónát, Tunnelt és tokenfájlt ne hozd létre újra.

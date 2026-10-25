@@ -1,6 +1,10 @@
-# Átadás – 2026. október 24.
+# Átadás – 2026. október 25.
 
-## Aktuális telepítési munka
+## Legfrissebb DNS-ellenőrzés – október 25.
+
+A felhasználó átállította a névszervereket, majd ellenőrzést kért. A `.hu` szülőzóna közvetlen lekérdezése, valamint Google és Cloudflare DoH az alexa/gerardo Cloudflare-párt igazolja; DS nincs. A Cloudflare dashboard még pending; a kézi **Check nameservers now** elindult. Apex Tunnel és www CNAME Proxied, mail/MX megőrizve; rekordot nem módosítottunk. Négy VPS-konténer healthy, de publikus HTTP/HTTPS még sikertelen a DNS/aktiválási állapot miatt. Ez felülírja az alábbi halasztást: a regisztrátori váltást már ne kérd újra. Következő feladat az aktív zóna, HTTPS és külső alkalmazáspróbák ellenőrzése. Teljes mérési eredmény és korlát: [DEPLOY-STATUS](DEPLOY-STATUS.md). Nem állítottunk be időzített követést, alkalmazásadat nem változott.
+
+## Telepítési munka – október 24. (történeti állapot)
 
 A felhasználó október 23-án a tényleges deploy folytatását kérte; október 24-én is ez a munka folytatódik. A **[DEPLOY-STATUS](DEPLOY-STATUS.md)** az irányadó élő állapot. Docker Engine 29.9.2, Compose v5.6.1 és `diku-deploy` telepítve; a három repó első main pushja és mindhárom CI sikeres. Az infra klón `/opt/diku/database`, a production env privátan elkészült, a valódi VPS-preflight és a systemd unitok ellenőrzése sikeres.
 

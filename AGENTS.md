@@ -1,5 +1,6 @@
 # Közös infrastruktúra és dokumentáció
 
+- Legfrissebb ellenőrzés, 2026-10-25: a felhasználó névszerverváltás után ellenőrzést kért. A `.hu` szülőzóna, a Google és Cloudflare resolver már az alexa/gerardo párt adja; DS nincs. A Cloudflare felület még pending, kézi nameserver-check elindítva, DNS-rekord nem módosult. A publikus HTTPS még nem érhető el; négy VPS-konténer healthy. Ez felülírja az október 24-i névszerverváltás-halasztást; ne kérd újra a már megtörtént regisztrátori váltást. Következő lépés az aktív Cloudflare-zóna és publikus HTTPS ellenőrzése. Részletek: docs/DEPLOY-STATUS.md.
 - A három mappa külön Git repó, a szülő könyvtár nem repó. Ne csinálj új monorepót.
 - Belépési pont: README.md és docs/HANDOFF.md; tervek: docs/ARCHITECTURE.md, DECISIONS.md, PRODUCT.md, ROADMAP.md.
 - Ez a repó a Compose, mentés, későbbi VPS deployment és közös dokumentáció helye. SQL séma csak a backend Flyway alatt él.

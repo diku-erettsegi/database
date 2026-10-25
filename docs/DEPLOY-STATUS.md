@@ -1,4 +1,19 @@
-# Telepítési állapot – 2026-10-24
+# Telepítési állapot – 2026-10-25
+
+## Legfrissebb: a névszerverváltás megtörtént, Cloudflare-aktiválás függőben
+
+A felhasználó október 25-én jelezte a DNS átírását és ellenőrzést kért. A 12:27 Europe/Budapest (CET) időpontban indított vizsgálat **igazolja a regisztrátori névszerverváltást**, de még nem a nyilvános weboldal működését. Ez felülírja az alábbi október 24-i halasztást.
+
+- A `.hu` szülőzónát kiszolgáló `a.hu` közvetlen, nem rekurzív válasza kizárólag `alexa.ns.cloudflare.com` és `gerardo.ns.cloudflare.com` delegálást ad. Google és Cloudflare DNS-over-HTTPS NS-lekérdezés ugyanezt igazolja.
+- A szülőzónában DS rekord nincs; a két publikus resolver sem ad DS-t. Régi DS miatti DNSSEC-validációs hibát nem találtunk; DNSSEC-et nem kapcsoltunk be.
+- A Cloudflare felületen továbbra is **Pending Nameserver Update / Waiting for your registrar to propagate your new nameservers**. A **Check nameservers now** kérés sikeresen elküldve; a felület visszajelzése szerint az ellenőrzés elindult. Ez nem aktiválási siker.
+- A Cloudflare DNS-táblában az apex továbbra is a helyes Tunnelre mutat, Proxied; www CNAME az apexre, Proxied. A mail A és MX megőrizve, a publikus resolverekből is visszaolvasható. DNS-rekordot, névszervert, proxykapcsolót vagy Tunnel-beállítást nem módosítottunk.
+- Az ellenőrzéskor a két autoritatív Cloudflare-névszerver nem ad publikus apex A címet; az AAAA-válasz `fd10:aec2:5dae::`. A Google A cache még a régi tárhelyet mutatta. A helyi gépről a HTTP/HTTPS névfeloldás hibás, a VPS-ről a HTTPS-kapcsolat sikertelen. Főoldal/API/belépés/www nyilvános működését ezért még nem igazoltuk, tanúsítványellenőrzést nem kerültünk meg.
+- SSH-n a VPS négy production konténere healthy. Ez a vizsgálat nem indított deployt, mentést vagy alkalmazásbeli tesztadatot.
+
+A [Cloudflare leírása](https://developers.cloudflare.com/dns/zone-setups/reference/domain-status/#pending) szerint a pending zóna már adhat DNS-választ, de még nem proxyzza a webforgalmat. Következő ellenőrzés: zóna Active, publikus A/AAAA és érvényes HTTPS, majd apex/www átirányítás, API/cache és belépés. **A Microware névszerverváltást nem kell megismételni.** Ezt a feladatot ellenőrzésként lezártuk; nincs külön időzített Codex-monitor.
+
+## Október 24-i telepítési ellenőrzések (történeti állapot)
 
 A felhasználó kifejezetten kérte a tényleges deploy folytatását. Ez a fájl az aktuális, ellenőrzött állapot; az október 22-i szerverfelmérés és a korábbi előkészítési bejegyzések történeti pillanatképek. A telepítési útmutató eljárásleírás, önmagában nem igazolja az ott szereplő lépések végrehajtását.
 
