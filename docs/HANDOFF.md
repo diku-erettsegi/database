@@ -1,4 +1,20 @@
-# Átadás – 2026. október 25.
+# Átadás – 2026. október 26.
+
+## Árak oldal: kedvezmények előtérben – október 26.
+
+A frontend `/arak` oldalán a kedvezményes ajánlatok kerültek felülre: piros −25%, áthúzott 280 000 Ft, nagy 210 000 Ft és 70 000 Ft megtakarítás; mellette az akár −35% / 182 000 Ft / 98 000 Ft megtakarítás, közvetlenül feltüntetett november 15-i és két hozott barát feltétellel. A 15%-os ajánlat külön sávban, november 16. – december 15. dátummal szerepel. Alapdíj, képzéstartalom, baráti táblák és feltételek lejjebb; díjszámítás/API nem változott. A JSX a frontend `src/App.tsx` Pricing függvényében, a kiegészítő stílus `src/pricing.css` fájlban van. Statikus dátumok és SEO-előrenderelés megmaradtak.
+
+Igazolt: frontend build és 6/6 SEO-teszt; asztali/820/390/320 px elrendezés, oldalszintű/kártyán belüli vízszintes kilógás nélkül; kedvezményrészletek horgony és kurzus CTA működik. A kész build Vite preview alatt `http://127.0.0.1:4173/arak/` címen látható (indított helyi Node folyamat PID 24464). A záró perjel nélküli Vite preview SPA-fallback téves kezdőlapi HTML-je külön hidratálási hibát adhat; a helyes `/arak/` betöltésekor nincs új konzolhiba. A helyi Docker Engine `compose ps` lekérdezése 500 hibát adott, ezért nem állítottuk újra a Dockert és nem módosítottuk a helyi konténereket/volume-okat.
+
+**Éles frissítés kész:** frontend `bad7369a6368e7f2ba55f81e794f5a63e2655e4a` main push, [CI 40294972010](https://github.com/diku-erettsegi/frontend/actions/runs/40294972010) success, automatikus VPS-frissítés. 08:53 UTC-kor a deploy service success/0, négy healthy konténer, két aktív timer; frontend digest `sha256:f71b8a04f3be5681e489d1bdd187776da7d086abca2d1235cc7f0d3e6811e76f`. A publikus `https://diku-erettsegi.hu/arak` HTTP 200, új ajánlatok és CSS, egy H1 és helyes canonical; böngészőben az új oldal, új konzolhiba nélkül. A frissítés közben rövid 502 választ láttunk, az ellenőrzés végére megszűnt. Helyi bizonyítékok a Gitből kizárt `.deploy/pricing-live-verification-20261026.json`, `.deploy/pricing-live-20261026.png`, `.deploy/pricing-mobile-20261026.png` fájlokban. Publikus belépési/POST próbát most nem végeztünk; részletek: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
+## DKIM és DMARC beállítva – október 25., 22:42 CET
+
+A felhasználó a Gitből kizárt `secrets/dkim-record.txt` fájlban átadta a nyilvános DKIM-kulcsot, majd képernyőképpel igazolta a `default._domainkey` nevet és a `_dmarc` rekord `v=DMARC1;p=none` értékét. Mindkét TXT-rekordot felvettük Cloudflare-ben, DNS only, a kapott 3600 másodperces TTL-lel. A felület nyolc DNS-rekordot mutat, mindkét új rekord visszaolvasva. A DKIM-kulcs érvényes, 2048 bites RSA; DER SHA-256: `30852beef4b55462d436afa33218d92dfb22fb812fff48e7a77d937776fcd9e6`. Nem generáltunk új kulcsot, privát kulcsot nem kezeltünk.
+
+Mindkét autoritatív Cloudflare-névszerver visszaadja a két TXT-rekordot. A Google és Cloudflare DoH DKIM-válasza teljes tartalmában egyezik a kapott értékkel (a DNS TXT-darabok összefűzése után); Cloudflare DoH-n DMARC is egyezik. A Google DMARC-lekérdezése 21:42:44 UTC-kor még korábbi NODATA választ ad, 1494 másodperc hátralévő negatív cache TTL-lel; ez terjedési korlát, nem hiányzó autoritatív rekord. Ne állítsd, hogy már minden resolver frissült. MX `5 mail.diku-erettsegi.hu`, mail A `185.111.89.212` és SPF `v=spf1 ip4:185.111.89.212 ~all` változatlan, mindkét publikus resolverrel igazolt.
+
+Helyi, Gitből kizárt ellenőrzési nyomok: `.deploy/dkim-verification-20261025.json`, `.deploy/dkim-authoritative-20261025.json`, `.deploy/dmarc-google-recheck-20261025.json`, `.deploy/cloudflare-dkim-dmarc-20261025.png`. Beállítások és folytatás: [CLOUDFLARE-SETUP](CLOUDFLARE-SETUP.md). A `p=none` nem kér karantént vagy elutasítást; nincs `rua` riportcím. Valódi levélküldési/fogadási próba és `Authentication-Results` fejlécellenőrzés még nincs; a DNS-beállítás önmagában nem bizonyítja a küldőszerver aláírását. Webes Tunnel, alkalmazáskód, VPS és automatikus levélküldés nem változott. A kitöltött kulcsfájlt ne másold Gitbe.
 
 ## Legfrissebb DNS-ellenőrzés – október 25.
 

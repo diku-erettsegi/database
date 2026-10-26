@@ -1,6 +1,19 @@
-# Telepítési állapot – 2026-10-25
+# Telepítési állapot – 2026-10-26
 
-## Legfrissebb: a névszerverváltás megtörtént, Cloudflare-aktiválás függőben
+## Legfrissebb: új Árak oldal élesben, publikus HTTPS igazolt
+
+2026. október 26., 08:53 UTC / 09:53 Europe/Budapest: az új, kedvezményeket kiemelő Árak oldal sikeresen kijutott a meglévő automatikus folyamaton. Ez felülírja az alábbi történeti állapot azon részét, hogy a publikus weboldal még nem érhető el.
+
+- Frontend main commit: `bad7369a6368e7f2ba55f81e794f5a63e2655e4a`. [GitHub Actions 40294972010](https://github.com/diku-erettsegi/frontend/actions/runs/40294972010): success, ellenőrzés és GHCR image-publikálás sikeres. Helyben TypeScript/kliens/SSR build, 18 oldal + 404 és 6/6 SEO-teszt PASS.
+- A VPS saját deploy timere vette át a kiadást; nem indítottunk kézi deployt. Futó frontend: `ghcr.io/diku-erettsegi/frontend@sha256:f71b8a04f3be5681e489d1bdd187776da7d086abca2d1235cc7f0d3e6811e76f`. A konténerben az új `offer-primary` HTML jelen van.
+- Záró SSH-ellenőrzés: `diku-deploy.service` Result=success, ExecMainStatus=0; deploy és backup timer active; frontend/backend/db/cloudflared mind healthy. A frissítés alatt egy rövid publikus 502 válasz volt, a szolgáltatás utána helyreállt.
+- `https://diku-erettsegi.hu/arak`: érvényes HTTPS, HTTP 200, CF-Cache-Status DYNAMIC. Az új kedvezményes árak és megtakarítások, egy H1, helyes canonical; a CSS asset az ellenőrzött helyi builddel egyező `index-BsMvR7RC.css`.
+- Publikus böngészőben az új árkártyák renderelődnek, nincs oldalszintű vízszintes kilógás vagy új konzolhiba. Asztali és 820/390/320 px helyi megjelenítés, kedvezményrészletek horgony és kurzus CTA ellenőrzött. Publikus admin/tanuló belépést és adatbeküldést ez a tartalmi módosítás nem tesztelt újra.
+- A helyi Docker Desktop Engine 500 hibát adott a `compose ps` lekérdezésre; a helyi konténereket nem építettük újra. Külön Vite preview: `http://127.0.0.1:4173/arak/`. Ez nem érintette a VPS sikeres telepítését.
+
+A DKIM/DMARC október 25-i DNS-beállítása külön, a [CLOUDFLARE-SETUP](CLOUDFLARE-SETUP.md) és [HANDOFF](HANDOFF.md) fájlokban dokumentált. Az alkalmazás továbbra sem küld automatikus levelet. Nyers helyi ellenőrzési eredmény és képernyőkép: `.deploy/pricing-live-verification-20261026.json`, `.deploy/pricing-live-20261026.png` (Gitből kizárva).
+
+## Október 25-i névszerver-ellenőrzés (történeti állapot)
 
 A felhasználó október 25-én jelezte a DNS átírását és ellenőrzést kért. A 12:27 Europe/Budapest (CET) időpontban indított vizsgálat **igazolja a regisztrátori névszerverváltást**, de még nem a nyilvános weboldal működését. Ez felülírja az alábbi október 24-i halasztást.
 

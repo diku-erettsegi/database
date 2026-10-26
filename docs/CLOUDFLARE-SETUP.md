@@ -1,5 +1,24 @@
 # Cloudflare DNS és Tunnel beállítási útmutató
 
+## Levelezési DNS beállítva – 2026. október 25., 22:42 CET
+
+A felhasználó által átadott kulcs és szolgáltatói képernyőkép alapján a következő két rekord létrejött a meglévő Cloudflare-zónában:
+
+| Név | Típus | Érték | TTL |
+| --- | --- | --- | --- |
+| `default._domainkey` | TXT, DNS only | A kapott `v=DKIM1; k=rsa; p=...` nyilvános kulcs, pontos másolat | 3600 s |
+| `_dmarc` | TXT, DNS only | `v=DMARC1;p=none` | 3600 s |
+
+A nyilvános kulcs helyi forrása a Gitből kizárt `secrets/dkim-record.txt`; RSA 2048 bit, a dekódolt DER SHA-256 ujjlenyomata `30852beef4b55462d436afa33218d92dfb22fb812fff48e7a77d937776fcd9e6`. A Cloudflare automatikusan több TXT-karakterláncra bontja a hosszú értéket; ezek összefűzve adják az eredeti rekordot. A szolgáltatói zónaexportban látható `\;` escape nem került szó szerinti backslashként a rekordba. A DKIM privát kulcsa a levelezőszolgáltatónál marad.
+
+Igazolás: a Cloudflare felületén mindkét rekord visszaolvasva; `alexa.ns.cloudflare.com` és `gerardo.ns.cloudflare.com` közvetlen TXT-válasza tartalmazza őket. Google és Cloudflare DoH-n a DKIM teljes tartalma egyezik a bemásolt kulccsal; Cloudflare DoH-n a DMARC is egyezik. Google DoH-n a DMARC 21:42:44 UTC-kor még negatív cache-ben volt, 1494 s hátralévő TTL-lel. A változatlan MX `5 mail.diku-erettsegi.hu`, mail A `185.111.89.212` és SPF `v=spf1 ip4:185.111.89.212 ~all` mindkét resolverrel ellenőrzött. Ez a szakasz felülírja az alábbi történeti levelezési állapotot.
+
+A `p=none` nem kér DMARC-alapú karantént vagy elutasítást. Riportcím (`rua`) nem volt megadva, ezért nem került be; a rekord önmagában nem hoz létre riportgyűjtést. Következő ellenőrzés: a szokásos levelezőből saját külső postaládába küldött levél `Authentication-Results` fejlécében DKIM/SPF/DMARC eredmény és domainilleszkedés, valamint fogadási próba. Levélküldés vagy küldőszerver-konfiguráció ellenőrzése még nem történt; a DNS-kulcs publikálása önmagában nem igazolja a levelek aláírását. `quarantine`/`reject` házirendre csak a tényleges küldők ellenőrzése után válts. Az alkalmazás továbbra sem küld automatikus e-mailt.
+
+Források: [Cloudflare levelezési rekordok](https://developers.cloudflare.com/dns/manage-dns-records/how-to/email-records/), [cPanel Email Deliverability](https://docs.cpanel.net/cpanel/email/email-deliverability-in-cpanel/). Helyi képernyőkép és DNS-ellenőrzések: `.deploy/cloudflare-dkim-dmarc-20261025.png`, `.deploy/dkim-verification-20261025.json`, `.deploy/dkim-authoritative-20261025.json`, `.deploy/dmarc-google-recheck-20261025.json` (Gitből kizárva).
+
+## Korábbi webes DNS- és Tunnel-ellenőrzések
+
 **Legfrissebb ellenőrzés: 2026. október 25.** A Microware névszerverváltás már igazolt a `.hu` szülőzónából, Google és Cloudflare DNS-ből. A Cloudflare felület még pending; kézi névszerver-ellenőrzés elindítva. DS nincs, apex/www Proxied beállítás megőrizve, négy VPS-konténer healthy, publikus HTTPS még nem működik. A korábbi halasztás történeti állapot: **a regisztrátori váltást nem kell újra elvégezni**, az aktiválást és HTTPS-t kell ellenőrizni. Részletek: [DEPLOY-STATUS](DEPLOY-STATUS.md).
 
 **Állapot: 2026. október 24.** A Rackforest VPS-en négy konténer healthy, mindkét alkalmazás automatikus frissítése, a belső auth/restore és a backup systemd szolgáltatás próbája sikeres; a két timer enabled/active. A Cloudflare Free zóna, Tunnel route, www 301, HTTPS-beállítások és privát/API cache bypass elkészült, a zóna **Pending Nameserver Update**. A felhasználó a Microware névszerverváltást későbbre halasztotta: **most kihagyjuk, a publikus domain/HTTPS próbával együtt**. A VPS működése és a domain nyilvános aktiválása külön állapot. Részletes igazolások és korlátok: [DEPLOY-STATUS](DEPLOY-STATUS.md).

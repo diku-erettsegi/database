@@ -1,6 +1,6 @@
 # Közös infrastruktúra és dokumentáció
 
-- Legfrissebb ellenőrzés, 2026-10-25: a felhasználó névszerverváltás után ellenőrzést kért. A `.hu` szülőzóna, a Google és Cloudflare resolver már az alexa/gerardo párt adja; DS nincs. A Cloudflare felület még pending, kézi nameserver-check elindítva, DNS-rekord nem módosult. A publikus HTTPS még nem érhető el; négy VPS-konténer healthy. Ez felülírja az október 24-i névszerverváltás-halasztást; ne kérd újra a már megtörtént regisztrátori váltást. Következő lépés az aktív Cloudflare-zóna és publikus HTTPS ellenőrzése. Részletek: docs/DEPLOY-STATUS.md.
+- Legfrissebb ellenőrzés, 2026-10-26: az új Árak oldal main push → sikeres CI → automatikus VPS-frissítés után élesben elérhető. Publikus HTTPS `/arak` 200, új HTML/CSS, helyes canonical, egy H1 és nincs új böngészőkonzol-hiba; négy healthy konténer, két aktív timer, deploy service success/0. Ez felülírja a korábbi pending/halasztott webes állapotot; a névszerverváltást ne kérd újra. DKIM és DMARC október 25-én felvéve; tényleges levélaláírás még külön ellenőrzendő. Részletek: docs/DEPLOY-STATUS.md, docs/CLOUDFLARE-SETUP.md és docs/HANDOFF.md. A helyi Docker jelenleg 500 hibát adott; az éles frissítést ez nem érintette.
 - A három mappa külön Git repó, a szülő könyvtár nem repó. Ne csinálj új monorepót.
 - Belépési pont: README.md és docs/HANDOFF.md; tervek: docs/ARCHITECTURE.md, DECISIONS.md, PRODUCT.md, ROADMAP.md.
 - Ez a repó a Compose, mentés, későbbi VPS deployment és közös dokumentáció helye. SQL séma csak a backend Flyway alatt él.
