@@ -1,4 +1,12 @@
-# Átadás – 2026. október 26.
+# Átadás – 2026. október 27.
+
+## Egységes kedvezményes ármegjelenítés – október 27.
+
+A frontend `src/PriceDisplay.tsx` és `src/price-display.css` közös árblokkja az Árak oldal mellett a `/kurzusok`, `/jelentkezes`, élő űrlapösszesítő, beküldési visszajelzés és admin jelentkezésrészlet nézetében is használatos. Nagy piros díj, áthúzott alapár, százalék és tényleges megtakarítás; a kurzuskártyán az ár a részletes adatok elé került. Az admin táblázatos lista tömör marad. Megjelenítés, API és üzleti díjszabály szétválasztva: a komponens nem áraz újra mentett rekordot, kedvezmény nélkül nem mutat hamis áthúzást/megtakarítást. A publikus receipt API nem ad alapdíjat, ezért abban a nézetben csak a kapott végösszeget/tanóradíjat/százalékot emeljük ki. Nincs backend-, séma-, űrlapengedélyezési vagy levelezési módosítás.
+
+Helyben igazolt: TypeScript + kliens/SSR build, 18 oldal + 404; 9/9 teszt (6 SEO, 3 megjelenítési regresszió: tényleges megtakarítás, teljes ár, történeti/hiányos alapár). Valódi helyi API-val 0/1/2/10 barát esetén 210/196/182/182 ezer Ft, a 35%-os maximum megmarad. Két csoport választása; kurzus/űrlap 390 és 320 px, Árak 820 és 320 px, asztali megjelenítés kilógás nélkül; nincs böngészőkonzol-hiba. Jelentkezést nem küldtünk be, admin belépést nem teszteltünk újra. A helyi Vite preview PID 24464 tovább fut, helyes előrenderelt útvonalak záró perjellel: `http://127.0.0.1:4173/kurzusok/`, `/jelentkezes/`, `/arak/`.
+
+**Éles frissítés igazolt:** frontend `25991faf5492cd695fe0253d4bd47eec761ebc27`, [CI 40537834858](https://github.com/diku-erettsegi/frontend/actions/runs/40537834858) success, saját VPS-timerrel automatikus frissítés. 16:10:33 UTC: service success/0, négy healthy konténer, két active timer. Frontend digest `sha256:84261a365ed28747a7838d0cfd1014a49f952f977e467ca7cb84d651f7c48ef9`; `/arak`, `/kurzusok`, `/jelentkezes` HTTPS 200/DYNAMIC, új `index-CgSKCACW.css`, egy H1 és helyes canonical. Éles böngészőben mindkét kurzus közös piros árblokkja, 210 000 Ft / −25% / 70 000 Ft megtakarítás, konzolhiba és kilógás nélkül. Részletek: [DEPLOY-STATUS](DEPLOY-STATUS.md). A publikus űrlap engedélyezése külön, változatlan előkészítési állapot; ne állítsd e megjelenítési frissítés alapján, hogy a jelentkezés megnyílt. Bizonyítékok: `.deploy/shared-pricing-live-verification-20261027.json`, `.deploy/shared-pricing-live-20261027.png` (Gitből kizárva).
 
 ## Árak oldal: kedvezmények előtérben – október 26.
 

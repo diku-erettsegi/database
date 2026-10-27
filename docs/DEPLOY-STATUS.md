@@ -1,6 +1,18 @@
-# Telepítési állapot – 2026-10-26
+# Telepítési állapot – 2026-10-27
 
-## Legfrissebb: új Árak oldal élesben, publikus HTTPS igazolt
+## Legfrissebb: egységes ármegjelenítés élesben – október 27.
+
+2026-10-27 16:10:33 UTC / 17:10:33 Europe/Budapest: a frontend `25991faf5492cd695fe0253d4bd47eec761ebc27` main commitja automatikusan kijutott a VPS-re. [GitHub Actions 40537834858](https://github.com/diku-erettsegi/frontend/actions/runs/40537834858) success (verify és image-publikálás). Helyi build és 9/9 teszt sikeres; a CI a valódi Nginx proxytesztet is lefuttatta.
+
+- Futó frontend: `ghcr.io/diku-erettsegi/frontend@sha256:84261a365ed28747a7838d0cfd1014a49f952f977e467ca7cb84d651f7c48ef9`. A konténer előrenderelt Árak HTML-je tartalmazza a közös `price-display` komponenst. A saját deploy timer frissített, kézi deployt nem indítottunk.
+- `diku-deploy.service` Result=success, ExecMainStatus=0; deploy és backup timer active; frontend/backend/db/cloudflared healthy. Backend kód/image és infrastruktúra-konfiguráció nem változott.
+- Publikus HTTPS `/arak`, `/kurzusok`, `/jelentkezes`: HTTP 200, CF-Cache-Status DYNAMIC, egy H1, helyes canonical. Mindhárom a helyi builddel egyező `index-CgSKCACW.css` assetet használja; benne a közös árblokk és kurzuskiemelés stílusai.
+- A publikus Kurzusok oldalon az API betöltése után mindkét csoportnál −25%, áthúzott 280 000 Ft, 210 000 Ft végösszeg, 70 000 Ft megtakarítás és 2 625 Ft/tanóra jelenik meg. Nincs konzolhiba vagy oldalszintű vízszintes kilógás (856 px tényleges nézetszélesség).
+- Helyi API + böngésző: csoportváltás és 0/1/2/10 barát előkalkuláció, 35%-os maximum; mobil/asztali ellenőrzések a HANDOFF-ban. Nem küldtünk be tesztjelentkezést, admin/tanuló belépést nem ismételtünk. A publikus űrlap továbbra is az előkészítési jelzést mutatja; az engedélyezési kapcsoló nem része ennek a megjelenítési módosításnak.
+
+Gitből kizárt bizonyítékok: `.deploy/shared-pricing-live-verification-20261027.json`, `.deploy/shared-pricing-live-20261027.png`, `.deploy/shared-pricing-desktop-20261027.png`, `.deploy/shared-pricing-mobile-20261027.png`. A közös komponens használata és a receipt hiányzó alapdíjának kezelése a frontend README-ben és [HANDOFF](HANDOFF.md)-ban dokumentált.
+
+## Új Árak oldal élesben, publikus HTTPS igazolt – október 26.
 
 2026. október 26., 08:53 UTC / 09:53 Europe/Budapest: az új, kedvezményeket kiemelő Árak oldal sikeresen kijutott a meglévő automatikus folyamaton. Ez felülírja az alábbi történeti állapot azon részét, hogy a publikus weboldal még nem érhető el.
 
