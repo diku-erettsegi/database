@@ -125,3 +125,7 @@ A dátum minden induló döntésnél 2026-10-17. Állapot: elfogadott kezdeti ir
 **Ok:** a cél átlátható tájékoztatás és jelentkezés, nem általános tartalomkezelő rendszer.
 
 **Következmény:** az október 20–21-i stratégia megadta az árat, indulást, két csoportot, oktatóneveket és helyszínintézményt. A részletes naptár, valódi portrék, terem, telefon, bérlési/fizetési feltételek és jogi szövegek még hiányoznak. A SEO nem kaphat kitalált címet, értékelést vagy eredményt. A marketing CMS és a tananyag-tagság külön későbbi ütem.
+
+## ADR-009 — Ellenőrzött jelentkezés, csoporthoz kötött hozzáférés
+
+2026-11-03 felhasználói válaszok alapján: a regisztráció szándékjelzés. Az eredeti ajánlat változatlan; a szerződés/befizetés és fizető barátok adminellenőrzése külön nyilvántartás. Korai kedvezmény csak teljes határidős befizetésnél. A várólista külön, maximum 5 elem, csoportsorzárral. Tanulói fiók csak elfogadott jelentkezéshez rendelhető; a csoportot innen vezetjük le. A hozzáférés az aktuális kurzusvég + 1 hónap, budapesti nap végéig; listázás és közvetlen fájlletöltés egyformán ellenőrzött. Régi közös óra csoport nélkül fail-closed marad a diákoknak. Nem törlünk történeti adatot és nem találunk ki visszamenőleges díjat.

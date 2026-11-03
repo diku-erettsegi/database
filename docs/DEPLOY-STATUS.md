@@ -1,4 +1,30 @@
-# Telepítési állapot – 2026-10-27
+# Telepítési állapot – 2026-11-03
+
+## Novemberi jelentkezési és tanulói funkciók élesben
+
+2026-11-03 **22:38:51 UTC / 23:38:51 Budapest**: backend és frontend összehangolt kiadása sikeres. [Backend CI 41731772675](https://github.com/diku-erettsegi/backend/actions/runs/41731772675) és [frontend CI 41731781731](https://github.com/diku-erettsegi/frontend/actions/runs/41731781731) completed/success.
+
+| Komponens | Commit | Futó image digest |
+| --- | --- | --- |
+| Backend | `39ebf8dcc16e4591d08082950540f6b063a0a36d` | `sha256:dfb48af34e28233e8485622282f428528b2ce815c559d304c1f903653bdfa236` |
+| Frontend | `acf82a5d701bbd00c7cc941faed7458ff2acfd5b` | `sha256:230a893dcfbc6afbc28b5b3f5f1d47976d32c9ec7f63bc0025e95125afa7a1b6` |
+
+A nyilvános GHCR `main` és teljes commit SHA tagek mindkét digesttel egyeznek. A deploy timert az új backend/frontend szerződés miatt átmenetileg megállítottuk, mindkét CI befejeződésekor visszakapcsoltuk, és a szokásos `diku-deploy.service` egyszeri indításával telepítettünk. A folyamatos kétperces frissítés ezután ismét működik; nem maradt szüneteltetve.
+
+- V4 Flyway success; mindkét csoport végdátuma 2027-05-29, 20 alkalom/csoport. A migráció hozzáad, nem töröl vagy áraz újra régi jelentkezést. V4-et innen ne szerkesszük át; következő sémaváltozás V5.
+- 22:42:34 UTC záró audit: deploy service Result=success / ExecMainStatus=0; deploy és backup timer **enabled/active**; frontend/backend/db/cloudflared **healthy**; nincs pending/recovery-required jelző.
+- Deploy előtti mentés `COMPLETE`: database.sql 13 116 bájt, uploads.tar.gz 109 bájt, checksum és release.env. A kiadás előtti üres alkalmazásadatokon a jelentkezésszám 0 maradt. Új visszaállítási próbát nem végeztünk.
+- Publikus HTTPS: `/kurzusok`, `/jelentkezes`, `/arak`, `/oktatas-menete`, `/helyszin`, `/kapcsolat`, `/impresszum`, `/adatkezeles` mind 200/DYNAMIC, egy H1, egyedi title és helyes canonical. Cégadatok, helyszín, laptopdíj, teljes befizetési feltétel és naptár megjelent.
+- Éles `/api/courses`: két csoport, 20 egyedi dátum, május 15. nélkül, utolsó kettő május 22./29.; általános jelentkezési határidő január 23., várólista 5 fő. Böngészőben a húsz nap kinyitható és az utolsó két nap szóbeli címkét kap; nincs konzolhiba/kilógás.
+- Éles módosító API-próbát vagy tesztadat-létrehozást nem végeztünk. Ezek helyben sikeresek: 29 backendteszt, 9 frontendteszt, teljes Compose smoke és böngészős admin ellenőrzés; részletek a [HANDOFF](HANDOFF.md)-ban.
+
+**Nyitva maradó aktiválás:** az űrlap buildkapcsolója false; új admin/backend funkciók élesek, a nyilvános beküldés felülete még nem megnyitott. Az API-t a frontendkapcsoló nem zárja. A felhasználó külön átnézendő [adatkezelési tervezetet](ADATKEZELESI-TAJEKOZTATO-TERVEZET.md) kért; az nem végleges tájékoztató. Automatikus levelezés, offsite mentés és SMTP-riasztás továbbra sincs.
+
+Bizonyítékok (Gitből kizárva): `.deploy/launch-live-deploy-20261103.log`, `.deploy/launch-final-audit-20261103.log`, `.deploy/launch-live-verification-20261103.json`, `.deploy/launch-courses-live-20261103.png`. A Python alap User-Agent Cloudflare 1010 választ kapott; az azonosított DIKU release-ellenőrző kérés és a valódi böngésző sikeres, biztonsági beállítást nem módosítottunk.
+
+---
+
+## Korábbi telepítési állapotok
 
 ## Legfrissebb: egységes ármegjelenítés élesben – október 27.
 

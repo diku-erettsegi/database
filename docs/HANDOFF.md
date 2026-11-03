@@ -1,4 +1,45 @@
-# Átadás – 2026. október 27.
+# Átadás – 2026. november 3.
+
+## Novemberi üzleti adatok, jelentkezéskezelés és éles kiadás
+
+A felhasználói kérdőív és az utána kapott pontosítások feldolgozva. A nyers `Downloads/message.txt` nincs a repóban; a jóváhagyott tények és hiányok: [LAUNCH-ANSWERS-2026-11](LAUNCH-ANSWERS-2026-11.md). A három repó külön marad. Titkok továbbra is csak kizárt helyi fájlokban.
+
+**Éles alkalmazás:** frontend `acf82a5d701bbd00c7cc941faed7458ff2acfd5b`, backend `39ebf8dcc16e4591d08082950540f6b063a0a36d`. Mindkét main CI success; 2026-11-03 22:38:51 UTC / 23:38:51 Budapest sikeres összehangolt telepítés, V4 migrációval. Négy healthy konténer, deploy és backup timer enabled/active; 22:42:34 UTC záró audit success/0, nincs pending vagy recovery-required jelző. A deploy timert a két image elkészüléséig átmenetileg megállítottuk, majd visszakapcsoltuk és a szokásos deploy service-t kézzel indítottuk; nem két külön, véletlenszerű részkiadás történt. Részletes digestek és ellenőrzés: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
+### Megvalósított működés
+
+- Céges/impresszumadatok, konkrét helyszín és érkezés, kapcsolattartás, min. 14 év, 15–24 fős induló csoport, fizetési feltételek. Ismeretlen telefon/terem/tematika/portré és jogi szöveg nincs kitalálva.
+- Laptopbérlés **30 000 Ft a teljes képzésre**, külön a képzési díjtól. Az új jelentkezés menti a laptopdíjat; réginél ismeretlen marad. A kedvezmény nem csökkenti a laptopdíjat.
+- Korai kedvezményhez **teljes képzési befizetés** kell november 15-ig / december 15-ig. A korai és igazolt baráti rész maximum 35%. Az eredeti feltételes ajánlat változatlan; külön admin pénzügyi összesítő őrzi a szerződésigazolást, képzésre befizetett összeget, teljes befizetés napját és az igazolt baráti kapcsolatok számát. Nincs automatikus bank/számlázó integráció; a laptopbefizetés nem része ennek az összesítőnek.
+- Kiskorú jelentkezéshez szülő neve és eljárási nyilatkozat, szerveroldali validációval. 5 fős várólista explicit választással, csoportsorzárral. Elfogadáshoz szerződésigazolás és pozitív befizetés kell. A nyilvános jelentkezési határidő 2027-01-23; később egyedi szervezői folyamat, nem új admin-beküldési végpont.
+- Admin csoportváltás szabad helyre vagy elfogadott jelentkezések atomikus cseréje. Naptár szerkeszthető, 20 egyedi növekvő dátummal.
+- Jóváhagyott naptár: **2027-01-09–2027-05-29**, május 15. kimarad; május 22. és 29. szóbeli felkészítés. Ezeket ne kérdezd újra. A naptár `course_dates` adatokból áll, nem generált húsz tananyagóra.
+- Tanulói fiók egy elfogadott jelentkezéshez köthető. Csak a saját csoport közzétett órái/fájljai érhetők el, a kurzus végét követő egy hónapig (**2027-06-29 nap végéig, Budapest**). A közvetlen letöltési URL is ellenőrzött. Csoport nélküli régi óra nem látható diáknak; adminnak csoporthoz kell rendelnie. A jogosultság lejárata nem adattörlés.
+
+### Ellenőrzések
+
+- Backend `mvn verify`: **29/29 PASS**, valódi Testcontainers MariaDB 11.4, 0 kihagyott teszt. Ide tartozik párhuzamos várólista (12 kérésből pontosan 5 hely), kiskorú/szülő, laptopdíj, határidős teljes befizetés, változatlan ár, idempotencia, helycsere, csoporton kívüli fájlletöltés tiltása és lejárat.
+- Frontend build: TypeScript, kliens/SSR, **18 előrenderelt útvonal + 404, 9/9 teszt PASS**. Main CI-ben a valódi Nginx proxyteszt is success. A helyi Docker működik (29.4.3), az októberi 500 hiba nem aktuális akadály.
+- Teljes helyi Compose healthy; frissített `scripts/smoke-test.mjs` PASS: SEO, CSRF/admin, jelentkezés→pénzügy→elfogadás→tanuló→csoportóra→privát fájl byte-egyezés, másik csoport 404, session érvénytelenítés és letiltás.
+- Helyi böngésző: kiskorú+szülő+laptop, két baráttal 35% / 182 000 + 30 000 Ft, pénzügy mentése, elfogadás, naptár mentése. A React szomszédos admin komponensek azonos kulcsa miatt megmaradó régi form javítva, újraellenőrizve: kiválasztás megszüntetése után nincs ottmaradó űrlap, Naptár lapon csak két kurzusűrlap.
+- Mobil 390 px árak/jelentkezés: nincs vízszintes kilógás. Éles böngészőben új képzési időpontok, teljes befizetés feltétele, két kurzusár és nyitható húszalkalmas naptár; nincs konzolhiba/kilógás. Publikus HTTPS nyolc oldalon 200/DYNAMIC, egyedi title, egy H1, helyes canonical. Éles `/api/courses` két húsznapos naptárt, május 29-i végét és január 23-i jelentkezési határidőt ad. Mindkét futó digest egyezik a main és commit SHA tagekkel.
+- Az éles adatbázisban a kiadáskor 0 jelentkezés, 0 tanulói fiók, 0 óra/fájl volt. Éles tesztjelentkezést vagy felhasználót nem hoztunk létre; a módosító folyamatokat helyben teszteltük. A telepítés előtti mentés COMPLETE, DB 13 116 bájt, uploadarchívum 109 bájt. Új restore-próba most nem történt.
+
+### Helyi tesztadatok és bizonyítékok
+
+A smoke fiktív jelentkezése **6** (REJECTED), érdeklődője **3**, tesztusere **6** (letiltva); a saját tesztóra/fájl törölve. A böngészős fiktív jelentkezés **7** pénzügyi ellenőrzése megmaradt, státusza végül CONTACTED, nem foglal elfogadott helyet. Más adatot nem töröltünk. Ezek csak helyi adatok.
+
+Gitből kizárt nyomok: `.deploy/launch-backend-verify.log`, `.deploy/launch-live-deploy-20261103.log`, `.deploy/launch-final-audit-20261103.log`, `.deploy/launch-live-verification-20261103.json`, `.deploy/launch-pricing-mobile-20261103.png`, `.deploy/launch-courses-live-20261103.png`; backend `target/surefire-reports`. A publikus HTTP-ellenőrzés a Python alap User-Agentre Cloudflare 1010 választ kapott, az azonosított DIKU release-ellenőrző User-Agenttel és rendes böngészőből sikeres; Cloudflare-védelmet nem kapcsoltunk ki.
+
+### Következő konkrét lépés
+
+A felhasználó **külön, átnézendő adatkezelési tervezetet kért**: [ADATKEZELESI-TAJEKOZTATO-TERVEZET](ADATKEZELESI-TAJEKOZTATO-TERVEZET.md), megnyitva a szerkesztőben. Célonkénti adatkör/jogalap-javaslat, megőrzési javaslat, törlésfelelős, felvételek alternatívája, szolgáltatók/átadások, joggyakorlás és konkrét jóváhagyási lap szerepel benne. **Nem jóváhagyott végleges jogi szöveg**, nem került a publikus adatkezelési oldalra. A javaslatok elfogadása után a hiányzó törlési/nyilatkozati folyamatot is meg kell valósítani, és a backend draft privacyVersion értékeit végleges verzióra váltani.
+
+A production `APPLICATIONS_ENABLED` változatlanul false: a felület előkészítési jelzést és tiltott beküldést mutat. Ez csak felületi kapcsoló, nem szerveroldali API-zár. A tervezet elkészítését és a működő új admint ne keverd össze az élő jelentkezés megnyitásával. Nincs SMTP, automatikus levél, e-mailes jelszó-visszaállítás, offsite mentés vagy operátori e-mailriasztás. A felvételek jogalapja/nyilatkozata, megőrzési szabályok, szolgáltatói szerződéses adatok és szerződési feltételek továbbra is véglegesítendők; részletek a novemberi listában. A 20 MB feltöltési korlát nem teljes órai videóplatform.
+
+---
+
+## Korábbi átadás – 2026. október 27. (történeti állapot)
 
 ## Egységes kedvezményes ármegjelenítés – október 27.
 

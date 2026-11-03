@@ -1,5 +1,11 @@
 # Rendszerarchitektúra
 
+## 2026-11-03 bővítés
+
+V4: course_dates és kurzusvég; WAITLISTED, korcsoport/szülői nyilatkozat; külön pénzügyi igazolási mezők; users.application_id egyedi kapcsolat; lessons.course_id. A csoporthoz tartozás a jelentkezésből származik, nincs külön szinkronizálandó tagságmásolat. Az EnrollmentService minden óra/fájl olvasáskor ellenőrzi a státuszt és lejáratot. A pénzügyi összesítő külön réteg a változatlan eredeti quote mellett. Az új szolgáltatások nem küldenek levelet és nem készítenek banki/számlázói tranzakciót. Üzleti szabályok és hiányok: [novemberi válaszok](LAUNCH-ANSWERS-2026-11.md).
+
+Az alábbi dátumozott leírások a korábbi állapot történetét is tartalmazzák.
+
 Állapot: 2026-10-21, helyi alkalmazás és éles telepítés előkészítése. Az aktuális üzleti döntések a [stratégiában](STRATEGY-2026-10.md), az API a [backend szerződésében](../../backend/API.md), a konkrét ellenőrzési eredmények a [HANDOFF](HANDOFF.md) fájlban találhatók. Ez a leírás nem állítja az éles telepítés vagy minden teszt sikerét.
 
 ## Cél és határok

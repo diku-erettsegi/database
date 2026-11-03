@@ -1,5 +1,13 @@
 # Célok és következő lépések
 
+## 2026-11-03 – aktuális ütem
+
+Megvalósítva: novemberi céges/helyszín/fizetési/laptop/tájékoztatási adatok, jóváhagyott naptár, 5 fős várólista, kiskorú szülői jelentkezése, pénzügyi igazolás, csoportváltás/helycsere, csoporthoz kötött és lejáró tananyag-hozzáférés. Az alábbi októberi feladatok történeti állapotot is tartalmaznak; aktuális teszt/deploy: HANDOFF és DEPLOY-STATUS.
+
+Külön átnézendő [adatkezelési tervezet](ADATKEZELESI-TAJEKOZTATO-TERVEZET.md) elkészült, nincs jóváhagyva/publikálva. A novemberi funkciók élesítve; az űrlap aktiválása és a jóváhagyott adatkezelési folyamat végrehajtása külön következő ütem.
+
+Hátralévő üzleti adatok/jóváhagyások: [novemberi lista](LAUNCH-ANSWERS-2026-11.md#pontosítandó-az-aktiváláshoz). Az adatkezelés, felvételkezelés és szerződési feltételek még nem véglegesek. Külső mentés/riasztás cél és hozzáférés nélkül nem aktiválható. Képzés közbeni egyedi belépés, visszalépés/elszámolás és számlázás manuális szervezői folyamat, nincs automatikus pénzügyi tranzakció.
+
 Frissítve: 2026-10-22. A [stratégia](STRATEGY-2026-10.md) irányadó: összevont kedvezmény maximum 35%-ig, kézi levelezés, stockfotók. Az aktuális kérés az automatikus Rackforest deploy előkészítése; teszt- és futtatási eredmények a HANDOFF.md-ben.
 
 ## 1. Helyi alkalmazás – elkészült alap

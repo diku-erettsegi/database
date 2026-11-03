@@ -1,20 +1,20 @@
 # DIKU – adatbázis és üzemeltetés
 
-**Legfrissebb éles ellenőrzés (2026-10-27):** az egységes kedvezményes ármegjelenítés sikeres main push/CI után automatikusan frissült a VPS-en. Az Árak, Kurzusok és Jelentkezés HTTPS-oldalak 200 választ adnak; az új közös árblokk élesben ellenőrzött, négy healthy konténer és két aktív timer. A megjelenítési frissítés nem nyitotta meg a még előkészítés alatt álló jelentkezési űrlapot. Ez felülírja az alábbi történeti DNS/pending állapotot. DKIM és DMARC felvéve; a levelek tényleges aláírása külön ellenőrzést igényel. Pontos eredmények: [DEPLOY-STATUS](docs/DEPLOY-STATUS.md), [Cloudflare és levelezés](docs/CLOUDFLARE-SETUP.md).
+**Legfrissebb éles kiadás (2026-11-03):** a novemberi üzleti adatok, az 5 fős várólista, szülői jelentkezés, kézi pénzügyi igazolás, csoportváltás, szerkeszthető naptár és a csoporthoz kötött/lejáró tanulói hozzáférés sikeres CI után telepítve. V4 success, négy healthy konténer, két enabled/active timer. A publikus oldalak és az új naptár HTTPS-en ellenőrzöttek. [Telepítési állapot](docs/DEPLOY-STATUS.md), [átadás és tesztek](docs/HANDOFF.md).
 
-**Aktuális telepítési állapot (2026-10-24): [DEPLOY-STATUS](docs/DEPLOY-STATUS.md).** A VPS-deploy, belső admin-auth és izolált restore sikeres. Mindkét timer enabled/active; frontend és backend main push → CI → GHCR → timer → VPS frissítés PASS, az adatok megmaradtak. A backup systemd service kézi próbája és a napi naptári ütemezés külön igazolt; négy healthy konténer, bootstrap eltávolítva. A restore üres uploadarchívummal történt, valódi tananyagbyte-próba még nincs. Cloudflare route/DNS, www 301 és privát/API cache bypass beállítva; a Microware névszerverváltást és a publikus HTTPS-próbát a felhasználó későbbre halasztotta. A korábbi előkészítési állapotot az alábbi dátumozott leírás őrzi.
+**A nyilvános jelentkezési felület még előkészítés alatt áll.** A felhasználó kérésére elkészült a külön [átnézendő adatkezelési tervezet](docs/ADATKEZELESI-TAJEKOZTATO-TERVEZET.md), célonkénti javaslatokkal és jóváhagyási lappal. Nem publikált végleges jogi szöveg. A megőrzés/törlés, felvételkezelés, szolgáltatói adatok és szerződési feltételek még véglegesítendők. A felületi kapcsoló nem szerveroldali API-tiltás.
 
 A `diku-erettsegi.hu` React + Spring Boot + MariaDB alkalmazása. Ez a repó tartalmazza a helyi és Ubuntu VPS környezet Compose konfigurációját, az üzemeltetési scripteket és a közös dokumentációt.
 
-## Jelenlegi funkciók – 2026. október 21.
+## Jelenlegi funkciók – 2026. november 3.
 
 - 18 előrenderelt útvonal és külön 404 oldal, egyedi SEO-metaadatokkal, mobil navigációval és helyi stockfotókkal. Kurzusok, szülői/diák tájékoztatók, oktatók, árak, helyszín és hivatalos OH-feladatsorok.
 - Két szombati csoport, legfeljebb 24 elfogadott jelentkezéssel csoportonként. A jelentkezés rögzíti a csoportot, beküldési időpontot, baráti ajánlást és laptopigényt; hálózati újrapróbáláskor azonos kérés nem duplikálódik.
 - Szerver által számított és megőrzött árajánlat: a korai és baráti kedvezmény összeadódik, maximum 35%-ig. A baráti jogosultságot a szervezők kézzel ellenőrzik.
 - Admin jelentkezési lista csoport-/státuszszűréssel, létszámmal és mentett árakkal. Külön programozós érdeklődői lista, kézzel szerkeszthető státusszal és belső megjegyzéssel. Az alkalmazás nem küld automatikus e-mailt.
-- Session/CSRF belépés, admin felhasználókezelés és audit; órák, dátumok, értekezletlinkek, privát fájlfeltöltés és tanulói letöltés. A tananyagok egyelőre közösek minden aktív diáknak.
+- Session/CSRF belépés, admin felhasználókezelés és audit; órák, dátumok, értekezletlinkek, privát fájlfeltöltés és tanulói letöltés. A tanuló csak a hozzá rendelt elfogadott jelentkezés csoportjának közzétett anyagát látja, a képzés végét követő egy hónapig; a közvetlen letöltés is ellenőrzött.
 
-A képzés adatai és a hátralévő tartalmi döntések a [stratégiában](docs/STRATEGY-2026-10.md) követhetők. Éles publikálás még nem történt.
+A képzés adatai és a hátralévő tartalmi döntések a [stratégiában](docs/STRATEGY-2026-10.md) követhetők. A novemberi pontosítások: [üzleti adatok és megvalósítás](docs/LAUNCH-ANSWERS-2026-11.md).
 
 ## Helyi indítás
 
@@ -31,7 +31,7 @@ docker compose up -d --build --wait
 - Admin: `admin@diku.local` / `DikuAdmin2026!`
 - Diák: `diak@diku.local` / `DikuDiak2026!`
 
-Ezek kizárólag a `local` profil tesztadatai; az éles profil nem hozza létre őket. A jelentkezések, programozós érdeklődések, felhasználók és órák valódi MariaDB-adatok. A fájlok külön Docker volume-ba kerülnek. Egy jelentkezés önmagában nem készít felhasználót: az admin külön hoz létre tanulói fiókot.
+Ezek kizárólag a `local` profil tesztadatai; az éles profil nem hozza létre őket. A jelentkezések, programozós érdeklődések, felhasználók és órák valódi MariaDB-adatok. A fájlok külön Docker volume-ba kerülnek. Egy jelentkezés önmagában nem készít felhasználót: az admin külön hoz létre tanulói fiókot, majd hozzákapcsolja egy elfogadott jelentkezéshez. A helyi alapdiák összerendelés nélkül nem fér hozzá tananyaghoz.
 
 Az opcionális `.env` fájl a `.env.example` másolásával készíthető el, például portütközés esetén. Az alkalmazás csak a saját gépről érhető el. Indítás után az adminban hozhatók létre az órák és tölthetők fel fájlok.
 
@@ -43,7 +43,7 @@ node scripts/smoke-test.mjs
 
 A próba **fiktív jelentkezést, programozási érdeklődőt és letiltott tesztdiákot hagy** az adatbázisban, megtekintéshez. Sikeres végigfutáskor a saját tesztóráját és fájlját törli; más órát vagy feltöltést nem töröl. Csak localhost/127.0.0.1 címmel futtatható. Helyben fiktív személyes adatokat használjunk.
 
-Az aktuális ellenőrzési körben **23/23 backendteszt sikeres valódi MariaDB-n**, és **6/6 frontendteszt sikeres**. A teljes környezet, böngészős próbák és korlátok részletes állapota a [HANDOFF](docs/HANDOFF.md) fájlban található.
+Az aktuális ellenőrzési körben **29/29 backendteszt sikeres valódi MariaDB-n**, és **9/9 frontendteszt sikeres**. A teljes helyi Compose smoke és admin/tanulói jogosultsági próbák is sikeresek. A teljes környezet, böngészős próbák és korlátok részletes állapota a [HANDOFF](docs/HANDOFF.md) fájlban található.
 
 ```powershell
 docker compose ps
@@ -59,10 +59,11 @@ Frontend gyors újratöltéssel: `frontend` mappában `npm ci`, majd `npm run de
 
 A Flyway SQL migrációk egyetlen hiteles forrása a backend `src/main/resources/db/migration` mappája. Ebben a repóban ne készíts másolatot vagy párhuzamos inicializáló SQL-t. MariaDB automatikusan elkészíti az üres adatbázist; a sémát az induló backend migrálja.
 
-A V1–V3 migráció megőrzi a régi jelentkezéseket és mentett árakat. A V2 történeti `mail_outbox` táblája használaton kívül marad; nincs SMTP-függőség, háttérküldő vagy Mailpit szolgáltatás. A programozós érdeklődőkkel a szervezők saját levelezőjükből veszik fel a kapcsolatot.
+A V1–V4 migráció megőrzi a régi jelentkezéseket és mentett árakat. A V2 történeti `mail_outbox` táblája használaton kívül marad; nincs SMTP-függőség, háttérküldő vagy Mailpit szolgáltatás. A programozós érdeklődőkkel a szervezők saját levelezőjükből veszik fel a kapcsolatot.
 
 ## Dokumentáció és következő fejlesztők
 
+- [Novemberi válaszok és hiányok](docs/LAUNCH-ANSWERS-2026-11.md), [adatkezelési tervezet](docs/ADATKEZELESI-TAJEKOZTATO-TERVEZET.md)
 - [Architektúra](docs/ARCHITECTURE.md), [döntések](docs/DECISIONS.md)
 - [Termék, oldalak, tartalmi helyek](docs/PRODUCT.md), [SEO](docs/SEO.md)
 - [Aktuális stratégia és képzési adatok](docs/STRATEGY-2026-10.md), [stockfotók és forrásaik](docs/IMAGE-ASSETS.md)
@@ -71,7 +72,7 @@ A V1–V3 migráció megőrzi a régi jelentkezéseket és mentett árakat. A V2
 - [Átadás és ellenőrzések](docs/HANDOFF.md)
 - [Agent útmutató](AGENTS.md)
 
-## Automatikus telepítés előkészítése – 2026. október 22.
+## Automatikus telepítés előkészítése – 2026. október 22. (történeti állapot)
 
 A frontend/backend main push után a GitHub Actions tesztel, image-et készít és publikál a GHCR-be. A VPS systemd timere kétpercenként ellenőrzi az image-eket; változáskor mentést készít, digest alapján frissít és healthchecket vár. A Cloudflare Tunnel a belső `frontend:80` szolgáltatást teszi elérhetővé. A szerveren nincs nyitott alkalmazás- vagy adatbázisport.
 

@@ -65,13 +65,17 @@ assert(course, 'A local test group must have space');
 assert.equal(course.capacity, 24);
 assert.equal(course.sessions * course.lessonsPerSession, 80);
 assert.equal(course.price.baseTotal, 280000);
-const applicationBody = { studentName: `Automata teszt ${stamp}`, email: `test-${stamp}@example.com`, phone: '+36 30 123 4567', parentName: 'Teszt szülő', message: 'Helyi integrációs teszt. Törölhető adat.', privacyAccepted: true, courseId: course.id, requestId: randomUUID(), friendCount: 2, referralNote: 'Két barát, adminnal egyeztetendő.', laptopRentalRequested: true };
+const applicationBody = { studentName: `Automata teszt ${stamp}`, email: `test-${stamp}@example.com`, phone: '+36 30 123 4567', parentName: 'Teszt szülő', message: 'Helyi integrációs teszt. Törölhető adat.', privacyAccepted: true, courseId: course.id, requestId: randomUUID(), friendCount: 2, referralNote: 'Két barát, adminnal egyeztetendő.', laptopRentalRequested: true, ageGroup: 'MINOR_14_17', guardianConfirmed: true, waitlistRequested: false };
 const application = await anonymous.request('/api/applications', {
   method: 'POST', expected: 201, body: applicationBody,
 });
 assert(application.id, 'Application must persist an ID');
 const expectedDiscount = Math.min(35, course.price.periodDiscountPercent + applicationBody.friendCount * 5);
 assert.equal(application.discountPercent, expectedDiscount);
+assert.equal(application.laptopRentalFee, 30000);
+assert.equal(course.sessionDates.length, 20);
+assert.equal(course.endDate, '2027-05-29');
+assert(!course.sessionDates.includes('2027-05-15'));
 assert.equal(application.quotedTotal, course.price.baseTotal * (100 - expectedDiscount) / 100, 'Server quote must stack and cap discounts');
 assert.equal((await anonymous.request('/api/applications', { method: 'POST', expected: 201, body: applicationBody })).id, application.id, 'Network retry must not duplicate application');
 await anonymous.request('/api/applications', { method: 'POST', expected: 409, body: { ...applicationBody, studentName: 'Eltérő név' } });
@@ -108,23 +112,36 @@ assert.equal(processedInterest.notes, 'Kézi kapcsolatfelvétel helyi tesztje.')
 assert.equal(processedInterest.createdAt, originalInterest.createdAt);
 assert(Number.isFinite(Date.parse(processedInterest.updatedAt)));
 console.log('PASS: group selection/filter, stacked discounts, immutable quote/date, idempotency and manual interest management.');
-const lesson = await admin.request('/api/admin/lessons', { method: 'POST', expected: 201, body: { title: `Tesztóra ${stamp}`, description: 'Helyi teszt, törölhető.', startsAt: '2026-11-01T15:00:00', meetingUrl: 'https://teams.microsoft.com/', published: false } });
+const lesson = await admin.request('/api/admin/lessons', { method: 'POST', expected: 201, body: { title: `Tesztóra ${stamp}`, description: 'Helyi teszt, törölhető.', startsAt: '2026-11-01T15:00:00', meetingUrl: 'https://teams.microsoft.com/', published: false, courseId: course.id } });
 const form = new FormData();
 form.append('file', new Blob(['DIKU integration test file'], { type: 'text/plain' }), 'diku-test.txt');
 const uploaded = await admin.request(`/api/admin/lessons/${lesson.id}/files`, { method: 'POST', body: form, expected: 201 });
 assert(uploaded.id, 'Uploaded file ID required');
 
+const createdUser = await admin.request('/api/admin/users', { method: 'POST', expected: 201, body: { name: 'Automata teszt diák', email: `student-${stamp}@example.com`, password: 'SmokeTestPassword2026!', role: 'STUDENT' } });
 const student = new Session();
-assert.equal((await student.login('diak@diku.local', 'DikuDiak2026!')).role, 'STUDENT');
+assert.equal((await student.login(createdUser.email, 'SmokeTestPassword2026!')).role, 'STUDENT');
+await admin.request(`/api/admin/users/${createdUser.id}/enrollment`, { method: 'PUT', expected: 400, body: { applicationId: application.id } });
+await admin.request(`/api/admin/applications/${application.id}/finance`, { method: 'PUT', body: { contractConfirmed: true, paidTrainingTotal: 280000, fullPaymentDate: null, verifiedFriendCount: 2 } });
+await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', body: { status: 'ACCEPTED' } });
+await admin.request(`/api/admin/users/${createdUser.id}/enrollment`, { method: 'PUT', body: { applicationId: application.id } });
+await student.request('/api/auth/me', { expected: 401 });
+await student.login(createdUser.email, 'SmokeTestPassword2026!');
+assert.equal((await student.request('/api/access')).courseId, course.id);
 await student.request('/api/admin/users', { expected: 403 });
 await student.request('/api/admin/programming-interests', { expected: 403 });
 assert(!(await student.request('/api/lessons')).some(item => item.id === lesson.id), 'Draft lesson must stay private');
 await student.request(`/api/files/${uploaded.id}/download`, { expected: 404 });
-await admin.request(`/api/admin/lessons/${lesson.id}`, { method: 'PUT', body: { title: lesson.title, description: lesson.description, startsAt: lesson.startsAt, meetingUrl: lesson.meetingUrl, published: true } });
+await admin.request(`/api/admin/lessons/${lesson.id}`, { method: 'PUT', body: { title: lesson.title, description: lesson.description, startsAt: lesson.startsAt, meetingUrl: lesson.meetingUrl, published: true, courseId: course.id } });
 assert((await student.request('/api/lessons')).some(item => item.id === lesson.id), 'Published lesson must appear');
 assert.equal(await student.request(`/api/files/${uploaded.id}/download`), 'DIKU integration test file');
 
-const createdUser = await admin.request('/api/admin/users', { method: 'POST', expected: 201, body: { name: 'Automata teszt diák', email: `student-${stamp}@example.com`, password: 'SmokeTestPassword2026!', role: 'STUDENT' } });
+
+const otherCourse = courses.find(c => c.id !== course.id);
+await admin.request(`/api/admin/lessons/${lesson.id}`, { method: 'PUT', body: { title: lesson.title, description: lesson.description, published: true, courseId: otherCourse.id } });
+await student.request(`/api/files/${uploaded.id}/download`, { expected: 404 });
+assert(!(await student.request('/api/lessons')).some(l => l.id === lesson.id));
+await student.request('/api/auth/logout', { method: 'POST', expected: 204 });
 const temporary = new Session();
 await temporary.login(createdUser.email, 'SmokeTestPassword2026!');
 await admin.request(`/api/admin/users/${createdUser.id}`, { method: 'PATCH', body: { name: createdUser.name, email: createdUser.email, role: 'STUDENT', enabled: false } });
@@ -132,7 +149,7 @@ await temporary.request('/api/auth/me', { expected: 401 });
 assert((await admin.request('/api/admin/audit')).length > 0, 'Audit must record admin actions');
 await admin.request(`/api/admin/files/${uploaded.id}`, { method: 'DELETE', expected: 204 });
 await admin.request(`/api/admin/lessons/${lesson.id}`, { method: 'DELETE', expected: 204 });
-await student.request('/api/auth/logout', { method: 'POST', expected: 204 });
+await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', body: { status: 'REJECTED', notes: 'Automata helyi próba vége; férőhely felszabadítva.' } });
 await student.request('/api/lessons', { expected: 401 });
 console.log('PASS: CSRF, application, admin status, login, roles, lessons, protected file upload/download, disabled-session revocation, audit, logout.');
 console.log(`Local test application ${application.id}, programming interest ${interest.id} and disabled test user ${createdUser.id} remain for inspection.`);

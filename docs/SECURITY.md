@@ -1,16 +1,16 @@
 # Biztonság és adatkezelési határok
 
-Frissítve: 2026-10-21. A jelenlegi működés szerződése a [backend API](../../backend/API.md); az ellenőrzések eredménye a [HANDOFF](HANDOFF.md). Az alábbiak technikai határok és élesítés előtti döntések, nem kész jogi tájékoztató.
+Frissítve: 2026-11-03. A jelenlegi működés szerződése a [backend API](../../backend/API.md); az ellenőrzések eredménye a [HANDOFF](HANDOFF.md). Az alábbiak technikai határok és élesítés előtti döntések, nem kész jogi tájékoztató.
 
 ## Jogosultságok
 
 | Szereplő | Elérés |
 | --- | --- |
 | Látogató | Publikus oldalak/csoportárak, CSRF token, jelentkezés, programozós érdeklődés, belépés |
-| Aktív tanuló | Saját sessionadat, minden közzétett óra és azok letöltése |
+| Aktív tanuló | Saját sessionadat, elfogadott jelentkezéshez rendelt saját csoport közzétett órái/fájljai, a kurzus végét követő egy hónapig |
 | Admin | Jelentkezések/státusz/megjegyzés, kézi programozós érdeklődőkezelés, userek, minden óra és fájl, legutóbbi 200 audit esemény |
 
-A frontend nem biztonsági határ. Spring Security védi az admin végpontokat; a letöltés külön vizsgálja, hogy az óra publikált-e. Két jelentkezési csoport van, de nincs csoportonkénti vagy diákonkénti tananyaghozzárendelés: minden aktív diák minden publikált órát lát.
+A frontend nem biztonsági határ. Spring Security védi az admin végpontokat; a letöltés külön vizsgálja a közzétételt, csoporttagságot, elfogadott státuszt és a budapesti lejárati napot. Csoport nélküli régi óra diáknak nem hozzáférhető. Hozzáférés hozzárendelése/visszavonása authVersiont vált; státusz/csoport/kurzusvég minden olvasáskor újraértékelődik.
 
 ## Meglévő védelmek
 
@@ -22,13 +22,15 @@ Egy példányos memóriaalapú limit van: jelentkezés 10/óra/IP, programozós 
 
 A jelentkezés és a programozós érdeklődés is explicit `privacyAccepted:true` értéket és CSRF-védelmet kér. A kliens UUID-ja és a normalizált üzleti tartalom ujjlenyomata biztosítja az idempotens ismétlést. Eltérő tartalom ugyanazzal UUID-val 409; a nyilvános visszaigazolás nem szivárogtatja ki az admin belső megjegyzését vagy a teljes rekordot.
 
-A férőhely és díj szerveroldali szabály. Csoportsorzár mellett csak legfeljebb 24 rekord fogadható el; a jelentkezési időpont, csoport és ár-pillanatkép státuszváltással nem módosul. A kedvezmény legfeljebb 35%, a baráti rész önbevallás; admin ellenőrzése továbbra szükséges. Ez nem online fizetés vagy könyvelési bizonylat. A baráti megjegyzéshez ne kérjünk más személy elérhetőségét.
+A férőhely és díj szerveroldali szabály. Csoportsorzár mellett csak legfeljebb 24 rekord fogadható el; a jelentkezési időpont, csoport és ár-pillanatkép státuszváltással nem módosul. A kedvezmény legfeljebb 35%, a baráti rész önbevallás; admin ellenőrzése továbbra szükséges. Ez nem online fizetés vagy könyvelési bizonylat. A külön pénzügyi összesítőben csak az admin által igazolt, befizető barátok számítanak. Korai kedvezményhez teljes határidős befizetés szükséges; az eredeti ajánlat változatlan. Kiskorúnál szülői eljárást/nyilatkozatot ellenőrzünk, teljes születési dátum nélkül. A várólista felső korlátja 5 fő, ugyanazzal a csoportsorzárral. A baráti megjegyzéshez ne kérjünk más személy elérhetőségét.
 
 A programozós érdeklődés külön célú név/e-mail nyilvántartás, `NEW`, `CONTACTED`, `COMPLETED` státusszal. A szervezők saját levelezőjükben intézik a megkeresést; az alkalmazás nem küld automatikus e-mailt és nem iratkoztat fel hírlevélre. A V2 `mail_outbox` csak megőrzött történeti tábla, nincs feldolgozva. Az esetleges történeti személyes adatok a megőrzési/törlési tervbe tartoznak.
 
 A production frontend űrlapkapcsoló (`VITE_APPLICATIONS_ENABLED`) csak a felületet tiltja; a nyilvános API-t nem zárja le. Valódi adatgyűjtés előtt véglegesíteni kell a jelentkezés és az érdeklődés külön adatkezelési tájékoztatását és a draft verziókat. Helyben fiktív adatot használjunk.
 
-## Élesítés előtt eldöntendő
+## Jelentkezés megnyitása előtt eldöntendő
+
+A külön [adatkezelési tervezet](ADATKEZELESI-TAJEKOZTATO-TERVEZET.md) javaslatai még nem jóváhagyott működési szabályok; a célonkénti döntési lap és a technikai hiányok ott követhetők.
 
 - Adatkezelő, tényleges célok/jogalapok, adatfeldolgozók, megőrzési/törlési folyamat, kiskorú jelentkezők kezelése és végleges tájékoztató. A jelenlegi oldal helyőrző, a checkbox és draft verzió nem helyettesíti ezt.
 - Valós szervezői elérhetőség; fiókok átadásának és jelszó-helyreállításnak a folyamata. Most az admin állít jelszót; nincs emailes reset vagy MFA.
