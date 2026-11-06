@@ -1,6 +1,12 @@
 # SEO és tartalom
 
-Állapot: 2026-10-21. Az útvonalak és metaadatok forrása a frontend `src/seo.ts`; a build és ellenőrzések tényleges eredménye a [HANDOFF](HANDOFF.md) fájlban van.
+## Tantermi keresési szándék – 2026-11-06
+
+A felhasználó kérésére a „tantermi digitális kultúra felkészítő” a kezdőlapi title/H1, bemutatkozó bekezdés és záró kurzusajánló szöveg része; a közös lábléc röviden megnevezi a szolgáltatást. A kezdőlap fő tartalmában három természetes előfordulás van, nem új ismétlődő marketingblokkok. A kurzus/jelentkezés, árak, oktatásmenet, helyszín, GYIK, szülői és diákoldal bevezetője vagy metaadata is a saját témájába illeszti a kifejezést. Az emelt szint, tantermi részvétel és Budapest továbbra is egyértelmű. A kezdőlapi belső link: „A tantermi felkészítő menete”.
+
+Oldalanként egyedi title és description; az OG és a kezdőlapi WebSite JSON-LD ugyanebből a forrásból épül. URL/canonical, noindex, sitemap, stockfotó-alt és robots szabály változatlan. A cím és a látható szöveg összhangja követi a [Google SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) útmutatását; nincs kulcsszósűrűség-cél vagy garantált rangsorolási eredmény. Helyi build és a meglévő 9 teszt sikeres; asztali és 390/320 px nézet ellenőrizve. Éles állapot: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
+Az alábbi technikai alapok 2026-10-21-én készültek. Az útvonalak és metaadatok forrása a frontend `src/seo.ts`; a build és ellenőrzések tényleges eredménye a [HANDOFF](HANDOFF.md) fájlban van.
 
 ## Technikai szerződés
 

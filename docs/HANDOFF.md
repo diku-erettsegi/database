@@ -1,4 +1,18 @@
-# Átadás – 2026. november 3.
+# Átadás – 2026. november 6.
+
+## Tantermi digitális kultúra felkészítő SEO – 2026-11-06
+
+A felhasználó több természetes előfordulást kért a „tantermi digitális kultúra felkészítő” kifejezésből. Főoldal: új H1 („Tantermi digitális kultúra felkészítő Budapesten.”), bemutatkozó és záró kurzusajánló szöveg, összesen 3 előfordulás a main tartalmában; negyedik a közös láblécben. Az emelt érettségi továbbra is látható az eyebrow/bevezetőben. Kapcsolódó kurzus/jelentkezés, árak, oktatásmenet, helyszín, GYIK és szülői/diák oldalak rövid szövege és saját metaadata pontosítva. OG és kezdőlapi JSON-LD leírás a közös seo.ts-ből követi. Nincs új útvonal, séma, függőség, API- vagy űrlapkapcsoló-változás; stock-alt, canonical és noindex szerződés megmaradt. Irány: [SEO](SEO.md).
+
+Helyi ellenőrzés: `npm run build` (típusok, kliens/SSR, 18 oldal + 404), `npm test` 9/9 PASS. Meglévő Vite preview 127.0.0.1:4173: főoldal asztali, 390 és 320 px beállított viewportban kifér, nincs konzolhiba. Új tesztjelentkezés vagy adatváltoztatás nem történt. Bizonyítékok Gitből kizárva: `.deploy/seo-home-desktop-20261106.png`, `.deploy/seo-home-mobile-20261106.png`.
+
+**Éles kiadás igazolt:** frontend `b72834f4b33361995027a52619e891cd8e91330b`, [CI 42135530930](https://github.com/diku-erettsegi/frontend/actions/runs/42135530930) success. A meglévő VPS-timer automatikusan telepítette; kézi deploy vagy timerleállítás nem történt. 2026-11-06 00:19:42 UTC / 01:19:42 Budapest: deploy success/0, négy healthy konténer, két enabled/active timer, nincs pending/recovery jelző. Frontend digest `sha256:b69f314e51d4159406c2828b056d68c5359fdc139323caaa7342eea199fbc4bf`, egyezik a GHCR main és commit taggel. Backend image változatlan; a szokásos mentési/telepítési folyamat újraindította. Telepítés közben rövid 502 válasz volt, a záró ellenőrzésben megszűnt.
+
+Kilenc érintett publikus HTTPS-oldal 200/DYNAMIC, egy H1, egyedi title/description, megfelelő canonical, OG-egyezés és helyi builddel egyező metaadat. A főoldal éles böngészőben is ellenőrizve, konzolhiba nélkül. Nem végeztünk éles adatbeküldést, backendtesztet/API-smoke-ot nem ismételtünk szövegváltozás miatt. A jelentkezés és jogi tervezet állapota változatlan. Bizonyítékok: `.deploy/seo-live-verification-20261106.json`, `.deploy/seo-vps-audit-20261106.log`, `.deploy/seo-home-live-20261106.png`. Részletes kiadás: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
+A régi TEMP/diku-ssh-libs csomagból hiányzott a paramiko init fájl; külön Gitből kizárt `.deploy/ssh-libs-20261106` függőségkészlet és `.deploy/ssh-run-20261106.py` helper készült. Ugyanazt a korábban rögzített SSH-hostkulcsot ellenőrzi; hitelesítő adat nem került kimenetbe vagy Gitbe. Ez helyi ellenőrzési segéd, nem szerverkonfiguráció-változás.
+
+---
 
 ## Novemberi üzleti adatok, jelentkezéskezelés és éles kiadás
 

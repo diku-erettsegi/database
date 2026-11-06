@@ -1,5 +1,7 @@
 # DIKU – adatbázis és üzemeltetés
 
+**2026-11-06 SEO-frissítés élesben:** „Tantermi digitális kultúra felkészítő Budapesten” főcím, természetes főoldali és kapcsolódó aloldali szövegek, egyedi metaadatok. Frontend b72834f, sikeres CI és automatikus VPS-frissítés; 9/9 teszt, mobil/asztali próba és kilenc publikus HTTPS-oldal ellenőrizve. [SEO](docs/SEO.md), [DEPLOY-STATUS](docs/DEPLOY-STATUS.md). Az alábbi november 3-i funkciók és az űrlap állapota változatlan.
+
 **Legfrissebb éles kiadás (2026-11-03):** a novemberi üzleti adatok, az 5 fős várólista, szülői jelentkezés, kézi pénzügyi igazolás, csoportváltás, szerkeszthető naptár és a csoporthoz kötött/lejáró tanulói hozzáférés sikeres CI után telepítve. V4 success, négy healthy konténer, két enabled/active timer. A publikus oldalak és az új naptár HTTPS-en ellenőrzöttek. [Telepítési állapot](docs/DEPLOY-STATUS.md), [átadás és tesztek](docs/HANDOFF.md).
 
 **A nyilvános jelentkezési felület még előkészítés alatt áll.** A felhasználó kérésére elkészült a külön [átnézendő adatkezelési tervezet](docs/ADATKEZELESI-TAJEKOZTATO-TERVEZET.md), célonkénti javaslatokkal és jóváhagyási lappal. Nem publikált végleges jogi szöveg. A megőrzés/törlés, felvételkezelés, szolgáltatói adatok és szerződési feltételek még véglegesítendők. A felületi kapcsoló nem szerveroldali API-tiltás.

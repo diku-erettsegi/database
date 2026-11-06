@@ -1,4 +1,18 @@
-# Telepítési állapot – 2026-11-03
+# Telepítési állapot – 2026-11-06
+
+## Tantermi felkészítő SEO élesben – 2026-11-06
+
+2026-11-06 **00:19:42 UTC / 01:19:42 Budapest**: a frontend `b72834f4b33361995027a52619e891cd8e91330b` main commitja sikeres [CI 42135530930](https://github.com/diku-erettsegi/frontend/actions/runs/42135530930) után automatikusan kijutott a VPS-re. A saját kétperces timer végezte a telepítést, kézi deploy vagy timerleállítás nem történt.
+
+- Futó frontend: `ghcr.io/diku-erettsegi/frontend@sha256:b69f314e51d4159406c2828b056d68c5359fdc139323caaa7342eea199fbc4bf`; GHCR main és teljes commit SHA tag egyezik. Backend változatlan `sha256:dfb48af34e28233e8485622282f428528b2ce815c559d304c1f903653bdfa236`; nincs új migráció vagy infrastruktúra-konfiguráció.
+- Deploy service Result=success / ExecMainStatus=0, négy healthy konténer, deploy és backup timer enabled/active; nincs pending/recovery-required jelző. A szokásos deploy/mentés közbeni újraindításkor rövid 502 választ láttunk, utána helyreállt.
+- HTTPS `/`, `/kurzusok`, `/jelentkezes`, `/arak`, `/oktatas-menete`, `/helyszin`, `/gyik`, `/szuloknek`, `/diakoknak`: 200/DYNAMIC, egy H1, egyedi title/description, helyes canonical, OG-egyezés, az ellenőrzött helyi builddel egyező metaadat. A főoldalon a célkifejezés a főcímben és két másik main szövegben is jelen van; a footer további előfordulás.
+- Éles böngészőben új főcím és bevezető, nincs konzolhiba. Helyi build, 18 oldal + 404 és 9/9 meglévő teszt PASS; asztali, 390 és 320 px beállított mobilnézet kilógás nélkül. Új függőség vagy CSS-változtatás nem kellett az alkalmazásban.
+- Éles űrlap-/belépési próbát nem végeztünk, alkalmazásadatot nem módosítottunk. A jelentkezési buildkapcsoló és a jogi piszkozat státusza változatlan. Ez tartalom- és SEO-frissítés, nem a jelentkezés megnyitása vagy mért keresésihelyezés-javulás.
+
+Nyomok Gitből kizárva: `.deploy/seo-live-verification-20261106.json`, `.deploy/seo-vps-audit-20261106.log`, `.deploy/seo-home-live-20261106.png`. Tartalmi döntések: [SEO](SEO.md), [HANDOFF](HANDOFF.md).
+
+---
 
 ## Novemberi jelentkezési és tanulói funkciók élesben
 
