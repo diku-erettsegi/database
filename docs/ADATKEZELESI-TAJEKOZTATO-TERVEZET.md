@@ -1,5 +1,7 @@
 # Adatkezelési tájékoztató – átnézendő tervezet
 
+**Történeti dokumentum.** A 2026-11-13/14-i válaszok és döntések felülírják az alábbi nyitott kérdések megválaszolt részeit. Aktuális szöveg: frontend/src/LegalPages.tsx; döntések és szervezői eljárás: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md); technikai megőrzés: [RETENTION](RETENTION.md); élesítés állapota: [DEPLOY-STATUS](DEPLOY-STATUS.md). Ezt a korábbi tervezetet ne publikáld a jelenlegi tájékoztató helyett.
+
 **Verzió: tervezet-2026-11-03. Nem hatályos, nem közzétett tájékoztató.**
 
 A dokumentum a szervező által megadott adatok és az alkalmazás jelenlegi működése alapján készült. A „Javaslat” és „Jóváhagyandó” részek még döntést igényelnek. Ezek nem már működő törlési szabályok vagy kész jogi állásfoglalások. Közzététel előtt adatvédelmi/jogi felülvizsgálat és az ügyvezető jóváhagyása szükséges; ezután az alkalmazás működését is hozzá kell igazítani. Ez a dokumentum nem ÁSZF és nem rendezi az elállás vagy visszatérítés feltételeit.

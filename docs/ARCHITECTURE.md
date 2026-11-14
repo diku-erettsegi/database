@@ -1,5 +1,11 @@
 # Rendszerarchitektúra
 
+## 2026-11-14 jelentkezésnyitás
+
+V5: jelentkezés lezárási időpontja és tartós szerződéses/pénzügyi megőrzési védelem; ízelítő teljesítési időpont; tanulói hozzáférés visszavonási időpont. A backend napi retenciója ugyanazt a csoport → jelentkezés → fiók zárolási sorrendet követi, mint az adminisztráció, és csak újraellenőrzött állapotot töröl. Elfogadási küszöb a szerver által igazolt képzési díj20%-a. Az eredeti díjajánlat változatlan.
+
+Publikus jelentkezés továbbra is nem kötelező szándékjelzés; írásos szerződés/számla/levél kézi. A frontend buildkapcsoló éles aktiválását külön rögzítjük. Új közös jogi modul és /reszveteli-feltetelek útvonal:19előrenderelt oldal. A privacyVersion azonosítók a publikált novemberi tájékoztatóhoz kötődnek, régieket nem írunk át. Technikai logjournald és mentésselejtezés két új hosttimerrel: [RETENTION](RETENTION.md). A megvalósítás nem ad videóstreaminget vagy automatikus órarögzítést. Döntések: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md).
+
 ## 2026-11-03 bővítés
 
 V4: course_dates és kurzusvég; WAITLISTED, korcsoport/szülői nyilatkozat; külön pénzügyi igazolási mezők; users.application_id egyedi kapcsolat; lessons.course_id. A csoporthoz tartozás a jelentkezésből származik, nincs külön szinkronizálandó tagságmásolat. Az EnrollmentService minden óra/fájl olvasáskor ellenőrzi a státuszt és lejáratot. A pénzügyi összesítő külön réteg a változatlan eredeti quote mellett. Az új szolgáltatások nem küldenek levelet és nem készítenek banki/számlázói tranzakciót. Üzleti szabályok és hiányok: [novemberi válaszok](LAUNCH-ANSWERS-2026-11.md).

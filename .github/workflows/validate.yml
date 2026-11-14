@@ -23,3 +23,46 @@ jobs:
         run: bash tests/preflight.test.sh
       - name: Test deployment orchestration
         run: bash tests/deploy.test.sh
+      - name: Test safe backup retention
+        run: bash tests/retention.test.sh
+      - name: Validate retention systemd units
+        run: systemd-analyze verify systemd/diku-*-retention.service systemd/diku-*-retention.timer
+  integration:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: database
+      - uses: actions/checkout@v4
+        with:
+          repository: diku-erettsegi/backend
+          ref: main
+          path: backend
+      - uses: actions/checkout@v4
+        with:
+          repository: diku-erettsegi/frontend
+          ref: main
+          path: frontend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Record application revisions
+        run: |
+          git -C backend rev-parse HEAD
+          git -C frontend rev-parse HEAD
+      - name: Build and start isolated local stack
+        working-directory: database
+        run: docker compose up -d --build --wait --wait-timeout 180
+      - name: Verify registration and admin workflow against real MariaDB
+        working-directory: database
+        run: node scripts/smoke-test.mjs
+      - name: Show test service state
+        if: failure()
+        working-directory: database
+        run: docker compose ps --all
+      - name: Stop isolated test stack
+        if: always()
+        working-directory: database
+        run: docker compose down

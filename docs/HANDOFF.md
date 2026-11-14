@@ -1,5 +1,15 @@
 # Átadás – 2026. november 6.
 
+## Jelentkezésnyitási kiadás – 2026-11-14
+
+A november13-i kitöltés és a felhasználó folytatásai alapján a jelentkezési szándék és az ízelítőkérés éles megnyitása a cél. Kód kész: V5retenció/20%előleg/adminvisszavonás és ízelítőtörlés, publikált adatkezelési/impresszum/részvételi oldalak, új logó/színek/stockképek/kódbetétek/Balázsbio. Backend új ízelítő DTO-ban a hozzájárulás ideje/verziója is látszik. Új19.útvonal /reszveteli-feltetelek. Döntések/napiadmineljárás: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md); retenció: [RETENTION](RETENTION.md). A tényleges élesítés és kapcsoló állapota kizárólag [DEPLOY-STATUS](DEPLOY-STATUS.md) legfrissebb bejegyzése szerint vehető késznek.
+
+Helyi ellenőrzés:37backendteszt0hiba/kihagyás; frontendbuild19oldal+404,10teszt; valódi izolált nginxproxy1teszt;40preflight+22deploy+9retenciósfixture PASS. A DTO utolsó két kiegészítő mezőjét a kiadási CI és a teljes smoke is ellenőrzi. A helyi Compose elsőpróbánál eljutott a valós beküldéshez/adminlistához; a hiányzó ízelítő privacyVersion DTO-mezőt javítottuk. Utána a DockerDesktop/WSL kapcsolat többször megszakadt, ezért teljes helyi smokePASS-t nem állítunk. Új databaseCI integrationjob checkoutolja a két alkalmazás aktuális maincommitját (SHA-kat naplózza), friss Compose/MariaDB-ben futtatja a teljes smoke-ot; nem használ productiontitkot vagy adatot.
+
+Böngészős vizuális ellenőrzés ebben a körben nem fejeződött be: a computer-use eszköz a Firefox URL-szabályellenőrzésének hiánya miatt leállította a vezérlést. Ezt nem kerültük meg más UI-automatizálással. A korábbi november6-i mobilképek nem bizonyítják az újCSS ellenőrzését. A funkcionális igazolás külön HTTP/API/CI-eredmény lesz.
+
+Élesítésnél egy átmeneti deploytimer-szünet alatt kell mindkét újimage CI-jét bevárni és a journald/mentésretenciót telepíteni; utána a timert visszakapcsolni. A VPS meglévődata ésadminfiók megmarad, a script nem enged általános törlést. Az e-mailkézi; a naponta elvégzendőadminteendőket át kell adni.
+
 ## Tantermi digitális kultúra felkészítő SEO – 2026-11-06
 
 A felhasználó több természetes előfordulást kért a „tantermi digitális kultúra felkészítő” kifejezésből. Főoldal: új H1 („Tantermi digitális kultúra felkészítő Budapesten.”), bemutatkozó és záró kurzusajánló szöveg, összesen 3 előfordulás a main tartalmában; negyedik a közös láblécben. Az emelt érettségi továbbra is látható az eyebrow/bevezetőben. Kapcsolódó kurzus/jelentkezés, árak, oktatásmenet, helyszín, GYIK és szülői/diák oldalak rövid szövege és saját metaadata pontosítva. OG és kezdőlapi JSON-LD leírás a közös seo.ts-ből követi. Nincs új útvonal, séma, függőség, API- vagy űrlapkapcsoló-változás; stock-alt, canonical és noindex szerződés megmaradt. Irány: [SEO](SEO.md).

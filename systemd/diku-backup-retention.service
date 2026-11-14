@@ -1,0 +1,20 @@
+[Unit]
+Description=Expire DIKU backup directories older than 30 days
+StartLimitIntervalSec=2h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/diku/database
+ExecStart=/bin/bash /opt/diku/database/scripts/backup-retention.sh
+User=diku-deploy
+Group=diku-deploy
+UMask=0077
+TimeoutStartSec=300
+Restart=on-failure
+RestartSec=5min
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/diku/database/.deploy /opt/diku/database/backups

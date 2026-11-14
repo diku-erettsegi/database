@@ -7,7 +7,7 @@ const url = new URL(base);
 assert(['localhost', '127.0.0.1'].includes(url.hostname), 'Only local test URLs are allowed.');
 
 const titles = new Set();
-for (const path of ['/', '/kurzusok', '/szuloknek', '/diakoknak', '/erettsegi-feladatsorok', '/programozas-izelito', '/jelentkezes', '/oktatas-menete', '/oktatok', '/arak', '/gyik', '/helyszin', '/kapcsolat', '/adatkezeles', '/impresszum', '/belepes', '/admin', '/tanulo']) {
+for (const path of ['/', '/kurzusok', '/szuloknek', '/diakoknak', '/erettsegi-feladatsorok', '/programozas-izelito', '/jelentkezes', '/oktatas-menete', '/oktatok', '/arak', '/gyik', '/helyszin', '/kapcsolat', '/adatkezeles', '/impresszum', '/reszveteli-feltetelek', '/belepes', '/admin', '/tanulo']) {
   const response = await fetch(base + path);
   assert.equal(response.status, 200, `${path} must be directly reachable`);
   const html = await response.text();
@@ -94,6 +94,7 @@ assert.equal(saved.quotedTotal, application.quotedTotal);
 assert.equal(saved.friendCount, 2);
 assert.equal(saved.friendDiscountStatus, 'PENDING_ADMIN');
 assert.equal(saved.laptopRentalRequested, true);
+assert.equal(saved.privacyVersion, 'launch-2026-11-13');
 assert(saved.createdAt.endsWith('Z') && Number.isFinite(Date.parse(saved.createdAt)), 'Server timestamp must be stored in UTC');
 const filtered = await admin.request(`/api/admin/applications?courseId=${course.id}`);
 assert(filtered.some(item => item.id === application.id) && filtered.every(item => item.courseId === course.id));
@@ -105,12 +106,17 @@ assert((await admin.request('/api/admin/programming-interests')).some(item => it
 
 const originalInterest = (await admin.request('/api/admin/programming-interests')).find(item => item.id === interest.id);
 assert.equal(originalInterest.status, 'NEW');
+assert.equal(originalInterest.privacyVersion, 'programming-preview-2026-11-13');
 await admin.request(`/api/admin/programming-interests/${interest.id}`, { method: 'PATCH', body: { status: 'CONTACTED', notes: 'Kézi kapcsolatfelvétel helyi tesztje.' } });
 const processedInterest = (await admin.request('/api/admin/programming-interests')).find(item => item.id === interest.id);
 assert.equal(processedInterest.status, 'CONTACTED');
 assert.equal(processedInterest.notes, 'Kézi kapcsolatfelvétel helyi tesztje.');
 assert.equal(processedInterest.createdAt, originalInterest.createdAt);
 assert(Number.isFinite(Date.parse(processedInterest.updatedAt)));
+const completedInterest = await admin.request(`/api/admin/programming-interests/${interest.id}`, { method: 'PATCH', body: { status: 'COMPLETED', notes: 'Tesztküldés teljesítve.' } });
+assert(Number.isFinite(Date.parse(completedInterest.completedAt)));
+await admin.request(`/api/admin/programming-interests/${interest.id}`, { method: 'DELETE', expected: 204 });
+assert(!(await admin.request('/api/admin/programming-interests')).some(item => item.id === interest.id), 'Revoked taster request must be removed');
 console.log('PASS: group selection/filter, stacked discounts, immutable quote/date, idempotency and manual interest management.');
 const lesson = await admin.request('/api/admin/lessons', { method: 'POST', expected: 201, body: { title: `Tesztóra ${stamp}`, description: 'Helyi teszt, törölhető.', startsAt: '2026-11-01T15:00:00', meetingUrl: 'https://teams.microsoft.com/', published: false, courseId: course.id } });
 const form = new FormData();
@@ -122,7 +128,10 @@ const createdUser = await admin.request('/api/admin/users', { method: 'POST', ex
 const student = new Session();
 assert.equal((await student.login(createdUser.email, 'SmokeTestPassword2026!')).role, 'STUDENT');
 await admin.request(`/api/admin/users/${createdUser.id}/enrollment`, { method: 'PUT', expected: 400, body: { applicationId: application.id } });
-await admin.request(`/api/admin/applications/${application.id}/finance`, { method: 'PUT', body: { contractConfirmed: true, paidTrainingTotal: 280000, fullPaymentDate: null, verifiedFriendCount: 2 } });
+await admin.request(`/api/admin/applications/${application.id}/finance`, { method: 'PUT', body: { contractConfirmed: true, paidTrainingTotal: 1, fullPaymentDate: null, verifiedFriendCount: 2 } });
+await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', expected: 400, body: { status: 'ACCEPTED' } });
+const financed = await admin.request(`/api/admin/applications/${application.id}/finance`, { method: 'PUT', body: { contractConfirmed: true, paidTrainingTotal: 50400, fullPaymentDate: null, verifiedFriendCount: 2 } });
+assert.equal(financed.finance.minimumAdvanceTotal, 50400, '20% of 252000 confirmed training fee without full-payment early discount');
 await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', body: { status: 'ACCEPTED' } });
 await admin.request(`/api/admin/users/${createdUser.id}/enrollment`, { method: 'PUT', body: { applicationId: application.id } });
 await student.request('/api/auth/me', { expected: 401 });
@@ -149,7 +158,8 @@ await temporary.request('/api/auth/me', { expected: 401 });
 assert((await admin.request('/api/admin/audit')).length > 0, 'Audit must record admin actions');
 await admin.request(`/api/admin/files/${uploaded.id}`, { method: 'DELETE', expected: 204 });
 await admin.request(`/api/admin/lessons/${lesson.id}`, { method: 'DELETE', expected: 204 });
-await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', body: { status: 'REJECTED', notes: 'Automata helyi próba vége; férőhely felszabadítva.' } });
+const withdrawn = await admin.request(`/api/admin/applications/${application.id}`, { method: 'PATCH', body: { status: 'WITHDRAWN', notes: 'Automata helyi próba vége; férőhely felszabadítva.' } });
+assert(Number.isFinite(Date.parse(withdrawn.closedAt)));
 await student.request('/api/lessons', { expected: 401 });
 console.log('PASS: CSRF, application, admin status, login, roles, lessons, protected file upload/download, disabled-session revocation, audit, logout.');
-console.log(`Local test application ${application.id}, programming interest ${interest.id} and disabled test user ${createdUser.id} remain for inspection.`);
+console.log(`Local test application ${application.id} and disabled test user ${createdUser.id} remain for inspection; taster request was deleted.`);

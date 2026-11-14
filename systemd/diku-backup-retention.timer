@@ -1,0 +1,10 @@
+[Unit]
+Description=Check DIKU 30-day backup retention daily, independently of backup success
+
+[Timer]
+OnCalendar=*-*-* 04:30:00 Europe/Budapest
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

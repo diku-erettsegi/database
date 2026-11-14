@@ -51,4 +51,5 @@ tar -tzf "$DEST/uploads.tar.gz" >/dev/null
 )
 printf '%s\n' 'complete' > "$DEST/COMPLETE"
 echo "Mentés elkészült: $ROOT/$DEST"
-# Megőrzés/offsite másolás külön, dokumentált üzemeltetési döntés.
+# A külön diku-backup-retention.timer 30 napos megőrzést kezel akkor is,
+# ha az új mentés hibás. A sikeres mentés nem feltétele a régi adatok törlésének.

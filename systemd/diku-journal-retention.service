@@ -1,0 +1,17 @@
+[Unit]
+Description=Rotate and expire dedicated DIKU host journals older than 30 days
+After=systemd-journald.service
+StartLimitIntervalSec=2h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+User=root
+# Rotation first also closes idle active journals before age-based vacuuming.
+ExecStart=/usr/bin/journalctl --rotate
+ExecStart=/usr/bin/journalctl --vacuum-time=30days --vacuum-size=256M
+TimeoutStartSec=300
+Restart=on-failure
+RestartSec=5min
+NoNewPrivileges=true
+PrivateTmp=true

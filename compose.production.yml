@@ -19,10 +19,9 @@ services:
     restart: unless-stopped
     mem_limit: 768m
     logging: &logging
-      driver: json-file
-      options:
-        max-size: 10m
-        max-file: "3"
+      # Dedicated Ubuntu VPS: install systemd/journald-diku-retention.conf first.
+      # journalctl rotation/vacuum also expires quiet containers by wall-clock age.
+      driver: journald
   backend:
     image: ${BACKEND_IMAGE:-ghcr.io/diku-erettsegi/backend:main}
     environment:
