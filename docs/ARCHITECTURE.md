@@ -2,9 +2,9 @@
 
 ## 2026-11-14 jelentkezésnyitás
 
-V5: jelentkezés lezárási időpontja és tartós szerződéses/pénzügyi megőrzési védelem; ízelítő teljesítési időpont; tanulói hozzáférés visszavonási időpont. A backend napi retenciója ugyanazt a csoport → jelentkezés → fiók zárolási sorrendet követi, mint az adminisztráció, és csak újraellenőrzött állapotot töröl. Elfogadási küszöb a szerver által igazolt képzési díj20%-a. Az eredeti díjajánlat változatlan.
+V5: jelentkezés lezárási időpontja és tartós szerződéses/pénzügyi megőrzési védelem; ízelítő teljesítési időpont; tanulói hozzáférés visszavonási időpont. A backend napi retenciója ugyanazt a csoport → jelentkezés → fiók zárolási sorrendet követi, mint az adminisztráció, és csak újraellenőrzött állapotot töröl. Elfogadási küszöb a szerver által igazolt képzési díj 20%-a. Az eredeti díjajánlat változatlan.
 
-Publikus jelentkezés továbbra is nem kötelező szándékjelzés; írásos szerződés/számla/levél kézi. A frontend buildkapcsoló éles aktiválását külön rögzítjük. Új közös jogi modul és /reszveteli-feltetelek útvonal:19előrenderelt oldal. A privacyVersion azonosítók a publikált novemberi tájékoztatóhoz kötődnek, régieket nem írunk át. Technikai logjournald és mentésselejtezés két új hosttimerrel: [RETENTION](RETENTION.md). A megvalósítás nem ad videóstreaminget vagy automatikus órarögzítést. Döntések: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md).
+Publikus jelentkezés továbbra is nem kötelező szándékjelzés; írásos szerződés/számla/levél kézi. A frontend buildkapcsoló éles aktiválását külön rögzítjük. Új közös jogi modul és /reszveteli-feltetelek útvonal:19 előrenderelt oldal. A privacyVersion azonosítók a publikált novemberi tájékoztatóhoz kötődnek, régieket nem írunk át. Technikai logjournald és mentésselejtezés két új hosttimerrel: [RETENTION](RETENTION.md). A megvalósítás nem ad videóstreaminget vagy automatikus órarögzítést. Döntések: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md).
 
 ## 2026-11-03 bővítés
 

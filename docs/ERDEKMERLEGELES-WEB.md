@@ -10,7 +10,7 @@ Szükségesség: tanuló neve és tág életkori kategóriája kell ahhoz, hogy 
 
 Hatás: kiskorúak miatt fokozott figyelem szükséges. Az elvárható cél a kért képzés előkészítése, nem marketing vagy harmadik félnek történő értékesítés. A szervező szülőn keresztül tájékoztatást ad, a tájékoztatót a diákkal is meg kell ismertetni. Nagykorú haladásáról szülőnek csak külön tanulói felhatalmazással adható információ.
 
-Garanciák: minimális adatkör; optionalüzenethez figyelmeztetés; privát, szerepkörrel védett admin; ügyvezetői hozzáférés; titkosított továbbítás; csoporthoz kötött portál; nem szerződött lezárt ügy90napos törlése; hozzáférési/tiltakozási/törlési jog; nincs publikált résztvevőlista vagy automatikus felvételi döntés. Tiltakozásnál egyedi vizsgálat és csak a feltétlenül szükséges kezelés folytatható; a puszta szándékjelzés szabadon visszavonható.
+Garanciák: minimális adatkör; optionalüzenethez figyelmeztetés; privát, szerepkörrel védett admin; ügyvezetői hozzáférés; titkosított továbbítás; csoporthoz kötött portál; nem szerződött lezárt ügy90 napos törlése; hozzáférési/tiltakozási/törlési jog; nincs publikált résztvevőlista vagy automatikus felvételi döntés. Tiltakozásnál egyedi vizsgálat és csak a feltétlenül szükséges kezelés folytatható; a puszta szándékjelzés szabadon visszavonható.
 
 Következtetés: a fent korlátozott adatkör és használat mellett a szervezési érdek érvényesíthető, az érintetti jogok és a kiskorú különös védelme megtartásával. Ettől eltérő adatcélra ez a lap nem ad jogalapot.
 
@@ -18,7 +18,7 @@ Következtetés: a fent korlátozott adatkör és használat mellett a szervezé
 
 Cél: jogosulatlan belépés, tömeges beküldés és adatvesztés megelőzése; adminműveletek visszakeresése. A munkamenet, CSRF, IP-alapú átmeneti kérésszám-korlát és rövid műveletnapló ehhez szükséges. Kevésbé invazív alternatíva az űrlapok és privát fájlok védelmét nem biztosítaná ugyanolyan módon; harmadik fél követőkódja/marketinganalitika nem szükséges.
 
-Hatás: IP, időpont, művelet és célrekord összekapcsolható felhasználóval. Nem naplózunk jelszót, session/CSRF tokent vagy teljes jelentkezési törzset. Hozzáférés csak üzemeltetéshez, nem teljesítményértékeléshez vagy reklámhoz. A biztonsági log/audit30napos, a kérésszám-korlát átmeneti. Dokumentált incidensnél csak az ügyhöz szükséges bizonyíték különíthető el, indokolt külön határidővel.
+Hatás: IP, időpont, művelet és célrekord összekapcsolható felhasználóval. Nem naplózunk jelszót, session/CSRF tokent vagy teljes jelentkezési törzset. Hozzáférés csak üzemeltetéshez, nem teljesítményértékeléshez vagy reklámhoz. A biztonsági log/audit30 napos, a kérésszám-korlát átmeneti. Dokumentált incidensnél csak az ügyhöz szükséges bizonyíték különíthető el, indokolt külön határidővel.
 
 Garanciák: HTTPS/Tunnel, belső Dockerhálózat, nem nyilvános adatbázis és fájlok, CSRF/sessionrotáció, erős jelszólenyomat, időalapú naplóselejtezés, mentéshozzáférés korlátozása. A külső infrastruktúra nemzetközi adattovábbítási feltételeit a szolgáltatói szerződések rendezik; ez a lap nem helyettesíti a DPA-t vagy az adattovábbítás vizsgálatát.
 

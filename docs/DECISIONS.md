@@ -2,9 +2,9 @@
 
 ## Jelentkezés megnyitása – 2026-11-14
 
-- A webes űrlap szándékjelzés; írásos szerződés és a legalább20%előleg igazolása külön lépés. Ez teszi egyértelművé a beküldés joghatását, miközben a korai kedvezményhez továbbra is teljes befizetés szükséges.
-- Új adatkezelési verziót csak új rekord kap. A retenció eseményhez kötött (lezárás/teljesítés/hozzáférés vége); szerződés/befizetés tartós védőjelölése megakadályozza az elszámolási bizonyíték véletlen90napos törlését.
-- A már jóváhagyott30napos naplómegőrzéshez journald időalapú szabály kell, mert a Docker max-size/max-file önmagában nem korlátozza az adatok életkorát. DedikáltVPS-en a hostszintű journalbeállítás minden szolgáltatásra kiterjed. Backupprune külön timer, a mentés sikerétől függetlenül.
+- A webes űrlap szándékjelzés; írásos szerződés és a legalább 20% előleg igazolása külön lépés. Ez teszi egyértelművé a beküldés joghatását, miközben a korai kedvezményhez továbbra is teljes befizetés szükséges.
+- Új adatkezelési verziót csak új rekord kap. A retenció eseményhez kötött (lezárás/teljesítés/hozzáférés vége); szerződés/befizetés tartós védőjelölése megakadályozza az elszámolási bizonyíték véletlen90 napos törlését.
+- A már jóváhagyott30 napos naplómegőrzéshez journald időalapú szabály kell, mert a Docker max-size/max-file önmagában nem korlátozza az adatok életkorát. DedikáltVPS-en a hostszintű journalbeállítás minden szolgáltatásra kiterjed. Backupprune külön timer, a mentés sikerétől függetlenül.
 - Kizárólag oktatói képernyő/hang rögzíthető; nincs diákhang/kép/név. A portál fájlletöltését nem nevezzük védett videóstreamnek. A szervező kézi szerződéses és felvételi eljárásai külön követhetők a [döntési lapon](LAUNCH-2026-11-13.md).
 
 ## Telepítési pontosítások – 2026-10-22

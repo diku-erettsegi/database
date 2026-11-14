@@ -1,4 +1,30 @@
-# Telepítési állapot – 2026-11-06
+# Telepítési állapot – 2026-11-14
+
+## Jelentkezés és ízelítőkérés élesben megnyitva
+
+**2026-11-14 21:13:21 UTC / 22:13:21 Budapest:** az összehangolt backend/frontend kiadás telepítve, a GitHub frontend `APPLICATIONS_ENABLED=true` változóval. A nyilvános űrlapok fogadják a szándékjelzéseket; nem keletkezik automatikus szerződés, számla vagy e-mail. Kód:
+
+| Komponens | Commit | Futó image digest |
+| --- | --- | --- |
+| Frontend | `6fe1e3d0fdf04e3a3a5c69cd625b6507fe273b0a` | `sha256:aa11517c115892993d52cd6086cb30f1a92cf7cd0986472a28f371c75fb2cf30` |
+| Backend | `2bf57b0676e3744d5205030d27ceed1a4ed706e8` | `sha256:bb7e931c48f7cde648990a53e0382443422a54f9c2f0df1ec7b2729f31a7265d` |
+| Infra kód | `92a9421f8e65a1da318a6c83682094f65a4f6a67` | Compose/systemd/scriptek, külön image nélkül |
+
+Mindkét GHCR main és teljes SHA tag azonos digestet ad. [Frontend CI43641092430](https://github.com/diku-erettsegi/frontend/actions/runs/43641092430), [backend CI43641086709](https://github.com/diku-erettsegi/backend/actions/runs/43641086709), [infra + teljes integráció CI43641098202](https://github.com/diku-erettsegi/database/actions/runs/43641098202): completed/success. A teljes integráció külön friss MariaDB/Nginx/frontend/backend stacken futott, a kiadott alkalmazáscommitokkal; jelentkezés, idempotencia, adminszűrés/státusz,20% előleg, tanulói hozzáférés/fájl, visszavonás és ízelítőtörlés PASS. Ez oldotta fel a helyi DockerDesktop/WSL instabilitás miatti teljes smoke-korlátot. Backend37, frontend10, proxy1, preflight40, deploy22, retention9 teszt sikeres; nincs sikeresnek feltüntetett kihagyás.
+
+**21:14:49 UTC záró audit:** mind a négy szolgáltatás healthy, loggingdriver journald; V1–V5 mind success; deploy service success/0/inactive; pending/recovery-required nincs. Deploy, backup, backup-retention, journal-retention: mind enabled/active. A kétperces automatikus main-image frissítés visszakapcsolva, nem maradt szüneteltetve. A kiadás konzisztens DB/upload mentést készített, majd a loggingváltás miatt a négy konténert újralétrehozta, éles volume-okat megtartva.
+
+Éles HTTPS ellenőrzés: /, /jelentkezes, /kurzusok, /arak, /oktatok, /adatkezeles, /impresszum, /reszveteli-feltetelek; helyes prerenderelt H1/canonical, új márka és jogi tartalom, nincs zártűrlap-figyelmeztetés, az ízelítőgomb engedélyezett. Valódi API-beküldés mindkét csoportba: rögzített szerveridő és új privacyVersion, adminlistában/csoportszűrésben látható; ismételt requestId nem duplikál. Admin CONTACTED→WITHDRAWN és closedAt PASS. Ízelítő manuális COMPLETED/completedAt, majd hozzájárulás-visszavonási DELETE PASS. Adminlogin, Secure cookie, CSRF403, anonimadmin401 és logout PASS.
+
+A két egyértelműen jelölt fiktív jelentkezés (szerződés és befizetés nélkül) pontos ID+UUID+teszte-mail+állapot alapján eltávolítva, darabonként1törölt sorral. A tesztízelítő az admin API-n törölve. Végül0jelentkezés,0ízelítőkérés,1aktív ADMIN; valódi jelentkező/felhasználó nem törlődött. Nem ment ki e-mail és nem jött létre szerződés/pénzügyi tétel.
+
+Retenció: hostjournal30nap/256MB és két új napi timer telepítve, service-k kézi első futása success/0; backupdry-run és futás0lejárt/0ismeretlen könyvtár. Syslog inaktív, imjournal olvasót a felmérés nem talált. A korábbi október24-i, már leállított izolált restore két konténere és két volume-ja exactnév/label/használatlanság ellenőrzés után eltávolítva; a production `diku_database` és `diku_uploads` megmaradt. A backend napi03:15-ös törlési kör konfigurálva és tesztekkel igazolva; jövőbeni éles naptári futást még nem állítunk lefutottnak. Részletek: [RETENTION](RETENTION.md).
+
+Vizuális korlát: az új CSS élő böngészős/mobilpróbája nem fejeződött be, mert a computer-use eszköz a Firefox URL-policy támogatásának hiánya miatt leállította a vezérlést. A kód-, prerender-, Nginx-, API- és teljes integrációs ellenőrzés sikeres; korábbi képernyőképet nem tekintünk az új design igazolásának.
+
+Gitből kizárt ellenőrző eszközök: `.deploy/launch-live-check-20261114.py`, `.deploy/launch-digests-20261114.json`, `.deploy/launch-final-audit-20261114.sh`, a fiktív rekordok szűk körű takarítási nyoma. Hitelesítő nem került commitba vagy kimenetbe. Napi szervezői feladatok: [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md). Az írásos szerződést/FAR/számlázást/kézi levelezést a szervező végzi; videóstreaminget és automatikus órarögzítést ez a kiadás nem tartalmaz.
+
+---
 
 ## Tantermi felkészítő SEO élesben – 2026-11-06
 
