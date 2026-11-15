@@ -1,5 +1,11 @@
 # Telepítési állapot – 2026-11-15
 
+## Oktatói bemutatkozások és telefonszám
+
+Az E/1-es bemutatkozásokat a frontend `6aec5e1` kiadás 14:19:02-kor telepítette budapesti idő szerint. Az egyforma méretű oktatói kártyák és a hívható +36 70 383 3321 a `f7d04dd932e48fedcfaaf239ca6dcd82d2d7b800` kiadással 14:28:26-kor kerültek élesbe. [Frontend CI](https://github.com/diku-erettsegi/frontend/actions/runs/43719007979) sikeres, a helyi build és mind a 10 teszt átment. A főoldal, a Kapcsolat és az Oktatók HTTPS-ellenőrzése igazolta a híváslinkeket, a bemutatkozásokat és az új CSS kiszolgálását. Böngészős vizuális próba nem történt.
+
+A futó frontend digestje `sha256:22588d2864bfce9d576214755c19fb59a3473bb5d1a525607f7c3121b487c605`. Négy healthy konténer és négy aktív timer, függő kiadás nincs. A körbevágásra szánt logó külön helyi átadási fájl.
+
 ## November 25-i határidő és tanulási tartalom – élesítve
 
 A backend közös árazási szabálya november 25-ig hosszabbítja a 25%-os kedvezményt. Az új frontend négy képes tanulási oldalt és egyező határidőket tartalmaz. Nincs migráció, új API-mező, levelezés vagy űrlapkapcsoló-változás. Döntések: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).

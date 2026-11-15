@@ -1,5 +1,13 @@
 # Átadás – 2026. november 15.
 
+## Oktatói bemutatkozások, kártyák, telefon és profilkép
+
+A felhasználó Peti teljes új bemutatkozását adta meg: szoftverfejlesztő végzettség, négy év kiscsoportos korrepetálás, több száz diák, online/tantermi tapasztalat és BME-hallgatói státusz. Peti és Balázs hárombekezdéses szövege E/1-re és helyesírásilag javított formára váltott. Az oktatói kártyák egyenlő szélességet/magasságot kapnak;1100px alatt portré felül,640px alatt egy oszlop, szöveglevágás nélkül. Aktuális telefon: **+36 70 383 3321**, `tel:+36703833321`; főoldali kérdezés, közös lábléc, Kapcsolat oldal. Forrás: frontend `docs/CONTENT-UPDATES.md`, `docs/CONTACT-UPDATES.md`.
+
+Külön, helyben átadható logóasset is készült a frontend `public/brand` és `design` mappáiban: eredeti kétsoros Manrope szólogó és középre igazított, körbevágásra alkalmas profilkép. Utóbbi4096/1024px PNG és vektoros SVG, fehér háttérrel; a teljes felirat a kör szélétől további10%-os belső margón belül van. Kör alakú előnézet szemrevételezve. A logófájlok és a hozzájuk tartozó README-változás egyelőre helyi, nem commitolt átadási fájlok; a fejléc/lábléc márkajelet nem cserélik le. Ne töröld vagy keverd őket a külön kiadott oktatói/telefonos módosítással.
+
+Az oktatói és telefonos kiadás tényleges teszt/deploy állapota: [DEPLOY-STATUS](DEPLOY-STATUS.md). Az árak, jelentkezési kapcsoló, backend és adatbázisséma változatlanok; éles jelentkezői adatot nem módosítottunk. A webes kártyáknál böngészős vizuális ellenőrzés továbbra nem igazolt a korábban dokumentált eszközkorlát miatt.
+
 ## Kedvezményhosszabbítás és tanulási oldalak
 
 Új irányadó döntés: **25% Super Early Bird november 25. nap végéig**, majd 15% november 26.–december 15.; teljes befizetés és maximum35% változatlan. Backend közös árazási szabály és Budapest-határtesztek frissítve, nincs adatátírás/migráció. Főoldal, Így tanulunk, Szülőknek, Diákoknak: képes kérdés–válasz blokkok, gyakorlati feladatmegoldás, személyes segítség, visszanézhető oktatói magyarázat, saját tempójú és plusz gyakorlás. A felvétel csak az oktató hangja/képernyője; új videótároló vagy automatikus rögzítés nincs. Részletek és források: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).
