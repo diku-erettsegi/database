@@ -1,5 +1,7 @@
 # Közös infrastruktúra és dokumentáció
 
+- 2026-11-15: a Super Early Bird új határa november 25. nap vége, Budapest; Early Bird november 26.–december 15. Teljes befizetés továbbra szükséges, maximum35%, mentett árajánlatok változatlanok. A négy tanulási témájú oldal bővítése és felvételkezelési határa docs/LEARNING-UPDATE-2026-11.md. A régi november15/16 dátumozott történeti részek nem irányadóak. Tényleges CI/deploy állapot docs/DEPLOY-STATUS.md.
+
 - 2026-11-14 lezárás: jelentkezési és ízelítőűrlap élesben engedélyezett, frontend6fe1e3d/backend2bf57b0/V5. Három CI + teljes Compose-smoke + éles API-beküldés/adminfolyamat PASS. Négy healthy/journald konténer, négy enabled/active timer; régi izolált restorepéldányok eltávolítva. Aktuális bizonyíték docs/DEPLOY-STATUS.md. Ne állítsd vissza a régi draft/zárt form állapotot. A vizuális böngészőpróba eszközkorlát miatt nincs igazolva.
 
 - 2026-11-14: jelentkezésnyitási kiadás V5-tel és új frontendjogi/arculati oldalakkal. Döntések/napi adminfolyamat docs/LAUNCH-2026-11-13.md; retenció docs/RETENTION.md; élesítés bizonyítéka docs/DEPLOY-STATUS.md. Korábbi jogi tervezet történeti. Csak oktató hangja/képernyője rögzíthető; diákhang/kép/név nem.20% előleg csak írásos szerződés után; a webes form szándékjelzés. V5 kiadás után immutable, következő V6. Backendretencióval összehangolt backup/journaldtimereket ne kapcsold ki indokolatlanul. Nyers kitöltést vagy hozzáférést ne commitolj.

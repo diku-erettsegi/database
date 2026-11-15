@@ -1,5 +1,9 @@
 # SEO és tartalom
 
+## Tantermi és otthoni felkészülés – 2026-11-15
+
+A kezdőlap, az Így tanulunk, a szülői és diákoldal bővítése: képes, célcsoporthoz igazított kérdés–válasz kártyák, gyakorlati feladatmegoldás, személyes segítség és otthoni ismétlés. A négy oldal saját description/OG szövege követi a tartalmat. A főoldali tantermi H1 megmarad; nincs új útvonal vagy sématípus. A felvételi állításokhoz hivatalos Felvi-hivatkozás, a képekhez meglévő helyi stockfájl és pontos alt tartozik. Nem ígérünk garantált pontszámot vagy univerzális felvételi elfogadást. Döntések, források és technikai határok: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md). Teszt és tényleges éles állapot: [DEPLOY-STATUS](DEPLOY-STATUS.md).
+
 ## Tantermi keresési szándék – 2026-11-06
 
 A felhasználó kérésére a „tantermi digitális kultúra felkészítő” a kezdőlapi title/H1, bemutatkozó bekezdés és záró kurzusajánló szöveg része; a közös lábléc röviden megnevezi a szolgáltatást. A kezdőlap fő tartalmában három természetes előfordulás van, nem új ismétlődő marketingblokkok. A kurzus/jelentkezés, árak, oktatásmenet, helyszín, GYIK, szülői és diákoldal bevezetője vagy metaadata is a saját témájába illeszti a kifejezést. Az emelt szint, tantermi részvétel és Budapest továbbra is egyértelmű. A kezdőlapi belső link: „A tantermi felkészítő menete”.

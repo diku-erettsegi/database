@@ -1,5 +1,7 @@
 # DIKU – adatbázis és üzemeltetés
 
+**2026-11-15 tartalmi és árazási frissítés:** Super Early Bird november 25. nap végéig; november 26-tól Early Bird. Főoldal, Így tanulunk, Szülőknek és Diákoknak: képes kérdés–válasz blokkok a tantermi figyelemről és otthoni gyakorlásról. Döntések és források: [LEARNING-UPDATE-2026-11](docs/LEARNING-UPDATE-2026-11.md). Kiadási bizonyíték: [DEPLOY-STATUS](docs/DEPLOY-STATUS.md). A jelentkezés nyitott állapotát megőrizzük.
+
 **A jelentkezés élesben nyitva:** [kurzusok és jelentkezés](https://diku-erettsegi.hu/kurzusok), [adminbelépés](https://diku-erettsegi.hu/belepes). A 2026-11-14-i kiadás CI-n, teljes rendszerpróbán és éles beküldés/adminfeldolgozás próbán átment. A tesztadatokat eltávolítottuk; automatikus deploy és a napi mentés/retenció aktív. A szervező naponta ellenőrizze az adminlistát, mert a levelezés manuális. [Bizonyíték és korlátok](docs/DEPLOY-STATUS.md), [napi teendők](docs/LAUNCH-2026-11-13.md).
 
 **2026-11-14 jelentkezésnyitási kiadás:** V5,20% előleg-ellenőrzés, új tájékoztatóverziók,90/30 napos alkalmazásretenció,30 napos mentés/journal-szabály. Publikus jogi oldalak és új arculat. Irányadó: [indulási döntések és napi adminteendők](docs/LAUNCH-2026-11-13.md), [retenció](docs/RETENTION.md), [átadás](docs/HANDOFF.md), [tényleges éles állapot](docs/DEPLOY-STATUS.md). Az alábbi régebbi, dátumozott állapotokat ezek felülírják.

@@ -1,4 +1,12 @@
-# Átadás – 2026. november 14.
+# Átadás – 2026. november 15.
+
+## Kedvezményhosszabbítás és tanulási oldalak
+
+Új irányadó döntés: **25% Super Early Bird november 25. nap végéig**, majd 15% november 26.–december 15.; teljes befizetés és maximum35% változatlan. Backend közös árazási szabály és Budapest-határtesztek frissítve, nincs adatátírás/migráció. Főoldal, Így tanulunk, Szülőknek, Diákoknak: képes kérdés–válasz blokkok, gyakorlati feladatmegoldás, személyes segítség, visszanézhető oktatói magyarázat, saját tempójú és plusz gyakorlás. A felvétel csak az oktató hangja/képernyője; új videótároló vagy automatikus rögzítés nincs. Részletek és források: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).
+
+Helyi frontend production build19oldal+404,10/10 teszt PASS; a négy oldal HTML auditja helyi képeket, helyes ARIA/ID-kat és jelentkezési linkeket igazolt. Helyi Docker API500 miatt új backendteszt helyben nem futott; a backend GitHub verify már success, a teljes kiadási CI és izolált rendszerpróba még folyamatban. A böngészős vizuális ellenőrzés továbbra nem igazolt: csak a korábban nem támogatott Firefox érhető el. A jelenlegi release tényleges állapotát a [DEPLOY-STATUS](DEPLOY-STATUS.md) rögzíti. A deploytimert csak a két új image összehangolásáig szüneteltetjük; a weboldal és a többi timer fut. A jelentkezés engedélyezését nem változtatjuk.
+
+Az alábbi november 14-i jelentkezésnyitás már lezárt történeti kiadás.
 
 **Lezárt élesítés:** 2026-11-14 22:13:21 Budapest, frontend6fe1e3d / backend2bf57b0 / V5. Jelentkezés és ízelítőkérés megnyitva, mindhárom CI és a teljes friss Compose-smoke PASS. Mindkét csoport éles beküldése és adminfeldolgozása kipróbálva, fiktív adatok törölve. Négy healthy konténer/journald, négy enabled/active timer, automatikus deploy visszaállítva. Részletes bizonyíték és vizuális korlát: [DEPLOY-STATUS](DEPLOY-STATUS.md). Az alábbi előkészítési bejegyzés lépései ezzel készre váltak; a még szükséges kézi szervezői folyamatokat a [napi adminútmutató](LAUNCH-2026-11-13.md) tartalmazza.
 

@@ -1,5 +1,7 @@
 # Stratégia és megvalósítás – frissítve: 2026. október 21.
 
+**Későbbi döntések elsőbbsége:** ez az októberi dokumentum történeti terv. A novemberi üzleti és indulási döntések a [LAUNCH-ANSWERS-2026-11](LAUNCH-ANSWERS-2026-11.md) és [LAUNCH-2026-11-13](LAUNCH-2026-11-13.md) fájlban vannak. A Super Early Bird új határa **2026. november 25. nap vége**, az Early Bird kezdete november 26.; a tantermi/otthoni módszer és a teljes befizetés feltétele: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md). A lentebb szereplő november 15/16 dátum már nem aktuális.
+
 Az október 20-i stratégia és az október 21-i pontosítás a mérvadó: **a kedvezmények összeadódnak, maximum 35%-ig; a levelezés manuális; csak stockfotók használhatók.** A megvalósítás helyi alkalmazásfejlesztés, élesítés nélkül. Az ellenőrzési eredmények a HANDOFF.md-ben találhatók.
 
 ## Célok

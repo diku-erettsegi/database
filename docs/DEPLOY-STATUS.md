@@ -1,4 +1,10 @@
-# Telepítési állapot – 2026-11-14
+# Telepítési állapot – 2026-11-15
+
+## November 25-i határidő és tanulási tartalom – kiadás előkészítve
+
+A backend `cc02a008e143496981dc5c2cdeb91b3259c97c91` közös árazási szabálya november 25-ig hosszabbítja a 25%-os kedvezményt. Az új frontend négy képes tanulási oldalt és egyező határidőket tartalmaz. Nincs migráció, új API-mező, levelezés vagy űrlapkapcsoló-változás. Döntések: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).
+
+Élesítés előtt mindkét image CI-jét és a friss Compose integrációt ellenőrizzük. A deploytimer átmenetileg áll, a weboldal és a mentési/retenciós timerek futnak. Ez a bejegyzés még nem igazol új éles kiadást; a lentebb szereplő november 14-i release a korábbi ellenőrzött állapot. Helyi frontend build és10teszt sikeres; backend GitHub verify success. A teljes CI/deploy bizonyíték lezáráskor ide kerül.
 
 ## Jelentkezés és ízelítőkérés élesben megnyitva
 
