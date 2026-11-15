@@ -1,10 +1,28 @@
 # Telepítési állapot – 2026-11-15
 
-## November 25-i határidő és tanulási tartalom – kiadás előkészítve
+## November 25-i határidő és tanulási tartalom – élesítve
 
-A backend `cc02a008e143496981dc5c2cdeb91b3259c97c91` közös árazási szabálya november 25-ig hosszabbítja a 25%-os kedvezményt. Az új frontend négy képes tanulási oldalt és egyező határidőket tartalmaz. Nincs migráció, új API-mező, levelezés vagy űrlapkapcsoló-változás. Döntések: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).
+A backend közös árazási szabálya november 25-ig hosszabbítja a 25%-os kedvezményt. Az új frontend négy képes tanulási oldalt és egyező határidőket tartalmaz. Nincs migráció, új API-mező, levelezés vagy űrlapkapcsoló-változás. Döntések: [LEARNING-UPDATE-2026-11](LEARNING-UPDATE-2026-11.md).
 
-Élesítés előtt mindkét image CI-jét és a friss Compose integrációt ellenőrizzük. A deploytimer átmenetileg áll, a weboldal és a mentési/retenciós timerek futnak. Ez a bejegyzés még nem igazol új éles kiadást; a lentebb szereplő november 14-i release a korábbi ellenőrzött állapot. Helyi frontend build és10teszt sikeres; backend GitHub verify success. A teljes CI/deploy bizonyíték lezáráskor ide kerül.
+**2026-11-15 02:44:16 UTC / 03:44:16 Budapest:** sikeres telepítés a szokásos mentési/deploy szolgáltatással. A két image CI-je és az új teljes integráció után kézzel indítottuk a szolgáltatást; a kétperces automatikus deploytimer visszakapcsolva. A jelentkezés és az ízelítőkérés továbbra engedélyezett.
+
+| Komponens | Ellenőrzött kódcommit | Futó image digest |
+| --- | --- | --- |
+| Frontend | `ba5f5546f8bbd6b34d702b3b7d26f95da47d1e8e` | `sha256:f00159531af4b845dac0553e6318415a90c64f32061328a52424019e7a98f1f5` |
+| Backend | `cc02a008e143496981dc5c2cdeb91b3259c97c91` | `sha256:cb8333693fc08067e53154384f0166fccc40480ef9167aea1f7ed680cdffd371` |
+| Integrációs futást indító dokumentáció | `9d62c83a2d490a2999bc77dd43d9dcb27891ce95` | Infrastruktúrakód változatlan |
+
+[Frontend CI43668858095](https://github.com/diku-erettsegi/frontend/actions/runs/43668858095), [backend CI43668637828](https://github.com/diku-erettsegi/backend/actions/runs/43668637828), [infra és teljes rendszerpróba CI43668862307](https://github.com/diku-erettsegi/database/actions/runs/43668862307): mind completed/success. Backend38/38,0hiba/kihagyás; frontendbuild19oldal+404 és10teszt; Nginx proxy ellenőrzés sikeres. Az izolált Compose/MariaDB integráció a fenti két kódcommitot használta, a jelentkezési/admin/tanulói folyamatok végigmentek. A helyi Docker API500 miatt új helyi backend/fullstack PASS-t nem állítunk. A backend README és a jelen lezáró dokumentáció `[skip ci]` commitjai nem változtatnak futó kódon, ezért nem indítanak új image-et vagy ismételt tesztkört.
+
+**02:44:28 UTC audit:** négy healthy konténer, journald; deploy Result=success/ExecMainStatus=0/inactive; mind a négy timer enabled/active; V1–V5 sikeres, új migráció nincs; pending/recovery-required nincs. A két futó image egyezik a GHCR main és ellenőrzött kódcommit taggel.
+
+**Éles, csak olvasási ellenőrzés:** /, /oktatas-menete, /szuloknek, /diakoknak, /arak, /gyik, /kurzusok, /jelentkezes, /reszveteli-feltetelek mind200/DYNAMIC. H1/title/description/canonical egyezik a builddel; az új tanulási blokkok és helyi képek jelen vannak. Árak/GYIK/részvételi november25, régi november15/16 nem szerepel. Mindkét kurzus nyitott; `/api/courses`:25%,210000Ft,2625Ft/tanóra,`validUntil=2026-11-25`. A főoldali ízelítőgomb engedélyezett, a zárt jelentkezési figyelmeztetés hiányzik. Nem küldtünk új éles tesztjelentkezést, nem módosítottunk/töröltünk jelentkezői adatot.
+
+Vizuális korlát: a jelenlegi eszközleltárban csak a korábban URL-policy miatt nem támogatott Firefox érhető el; a mobil/asztali böngészőpróba nem igazolt. A statikus HTML audit helyes ARIA-hivatkozásokat, egyedi ID-kat és létező helyi képeket ellenőrzött; ez nem helyettesít képernyőképes megjelenési tesztet.
+
+Gitből kizárt bizonyítékok: `.deploy/learning-ci-evidence-20261115.json`, `.deploy/learning-digests-20261115.json`, `.deploy/learning-live-check-20261115.json`, `.deploy/learning-final-audit-20261115.log`. Titok vagy személyes adat nem került a commitokba.
+
+---
 
 ## Jelentkezés és ízelítőkérés élesben megnyitva
 
